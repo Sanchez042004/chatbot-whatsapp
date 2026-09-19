@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment and secrets (CRITICAL)
+.env
+.env.local
+.env.*.local
+
+# WhatsApp session credentials (CRITICAL - NEVER COMMIT)
+baileys_auth_info/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
