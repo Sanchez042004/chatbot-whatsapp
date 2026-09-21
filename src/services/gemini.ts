@@ -1,6 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import { config } from '../config/env';
 import { getBusinessContext } from './supabase';
+import { sendN8nEvent } from './n8n';
 
 const ai = new GoogleGenAI({ apiKey: config.gemini.apiKey });
 
@@ -114,6 +115,14 @@ export async function generateResponse(userMessage: string, from: string): Promi
     if (wantsAdvisor) {
       activateAdvisorMode(from);
       pendingAdvisorOffer.delete(from);
+
+      // 📡 Notificar a n8n
+      sendN8nEvent('ADVISOR_REQUESTED', {
+        from,
+        message: userMessage,
+        reason: 'Solicitud directa de asesor humano por palabra clave'
+      }).catch(() => {});
+
       return '¡Claro! 🧑‍💼 En un momento un asesor de nuestro equipo se comunicará contigo. ¡Gracias por tu paciencia! 🙏';
     }
 
@@ -123,6 +132,14 @@ export async function generateResponse(userMessage: string, from: string): Promi
       if (confirms) {
         activateAdvisorMode(from);
         pendingAdvisorOffer.delete(from);
+
+        // 📡 Notificar a n8n
+        sendN8nEvent('ADVISOR_REQUESTED', {
+          from,
+          message: userMessage,
+          reason: 'Confirmó oferta de asesor tras consulta no resuelta'
+        }).catch(() => {});
+
         return '¡Perfecto! 🧑‍💼 Un asesor se comunicará contigo muy pronto. ¡Hasta luego! 👋';
       } else {
         // No confirmó, seguir como normal

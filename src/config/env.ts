@@ -7,7 +7,8 @@ const {
   GEMINI_API_KEY,
   SUPABASE_URL,
   SUPABASE_ANON_KEY,
-  PORT
+  PORT,
+  N8N_WEBHOOK_URL
 } = process.env;
 
 if (!GEMINI_API_KEY) {
@@ -27,6 +28,9 @@ export const config = {
   supabase: {
     url: SUPABASE_URL,
     anonKey: SUPABASE_ANON_KEY,
+  },
+  n8n: {
+    webhookUrl: N8N_WEBHOOK_URL || '',
   },
   port: parseInt(PORT || '3000', 10),
 };

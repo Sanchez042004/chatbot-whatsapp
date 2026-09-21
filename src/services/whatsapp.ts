@@ -8,6 +8,7 @@ import {
   activateAdvisorMode,
   resetUserSession
 } from './gemini';
+import { sendN8nEvent } from './n8n';
 
 // ── Configuración de tiempos de inactividad ──
 // 5 minutos sin actividad para preguntar si necesita algo más
@@ -58,6 +59,12 @@ function scheduleInactivityTimers(from: string, sock: any) {
           resetUserSession(from);
           clearUserInactivityTimers(from);
           console.log(`🔒 Sesión cerrada por inactividad para ${from}`);
+
+          // 📡 Notificar a n8n
+          sendN8nEvent('SESSION_CLOSED', {
+            from,
+            reason: 'Inactividad prolongada del usuario'
+          }).catch(() => {});
         } catch (err) {
           console.error('Error enviando mensaje de cierre de sesión:', err);
         }
