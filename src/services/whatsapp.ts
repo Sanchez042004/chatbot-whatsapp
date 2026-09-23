@@ -121,6 +121,29 @@ function checkRateLimit(from: string): boolean {
   return true;
 }
 
+export interface BotStatusInfo {
+  status: 'connecting' | 'open' | 'close' | 'qr_ready';
+  lastQrRaw: string | null;
+  connectedPhone: string | null;
+  uptimeSeconds: number;
+  activeSessionsCount: number;
+}
+
+let botState: 'connecting' | 'open' | 'close' | 'qr_ready' = 'connecting';
+let latestQrString: string | null = null;
+let connectedUserPhone: string | null = null;
+const botStartTime = Date.now();
+
+export function getBotStatus(): BotStatusInfo {
+  return {
+    status: botState,
+    lastQrRaw: latestQrString,
+    connectedPhone: connectedUserPhone,
+    uptimeSeconds: Math.floor((Date.now() - botStartTime) / 1000),
+    activeSessionsCount: userSessionTimers.size,
+  };
+}
+
 export async function startWhatsAppBot() {
   const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info');
 
@@ -134,17 +157,24 @@ export async function startWhatsAppBot() {
     const { connection, lastDisconnect, qr } = update;
     
     if (qr) {
+      botState = 'qr_ready';
+      latestQrString = qr;
       console.log('Escanea este código QR con tu WhatsApp:');
       qrcode.generate(qr, { small: true });
     }
 
     if (connection === 'close') {
+      botState = 'close';
       const shouldReconnect = (lastDisconnect?.error as Boom)?.output?.statusCode !== DisconnectReason.loggedOut;
       console.log('Conexión cerrada debido a:', lastDisconnect?.error, ', reconectando:', shouldReconnect);
       if (shouldReconnect) {
+        botState = 'connecting';
         startWhatsAppBot();
       }
     } else if (connection === 'open') {
+      botState = 'open';
+      latestQrString = null;
+      connectedUserPhone = sock.user?.id ? sock.user.id.split(':')[0] : '573177509725';
       console.log('¡Bot conectado y listo para recibir mensajes!');
     }
   });

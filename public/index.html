@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitBot AI — El Asistente Inteligente de WhatsApp para Gimnasios</title>
+  <meta name="description" content="Chatbot conversacional de WhatsApp con IA para gimnasios. Impulsado por RAG con Google Gemini, Supabase pgvector, derivación a asesor humano y automatización n8n.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="assets/mascot.jpg">
+</head>
+<body>
+  <!-- Background glow particles & patterns -->
+  <div class="bg-pattern"></div>
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="glow-orb orb-3"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">
+        <img src="assets/mascot.jpg" alt="FitBot Mascot" class="nav-mascot-icon">
+        <span class="logo-text">FitBot <span class="accent-badge">AI</span></span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#features">Características</a>
+        <a href="#demo">Preguntas Demo</a>
+        <a href="#architecture">Arquitectura</a>
+        <a href="#admin" id="open-qr-nav-btn">📱 Vincular WhatsApp</a>
+        <a href="https://github.com/Sanchez042004/chatbot-whatsapp" target="_blank" rel="noopener noreferrer" class="github-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <div class="status-indicator" id="nav-status-badge">
+          <span class="status-dot"></span>
+          <span class="status-text">Verificando...</span>
+        </div>
+        <a href="https://wa.me/573177509725?text=Hola%20FitBot" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+          <span>💬 Probar en WhatsApp</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="hero-container">
+      <div class="hero-mascot-wrapper">
+        <div class="mascot-glow-ring"></div>
+        <img src="assets/mascot.jpg" alt="FitBot 3D Mascot" class="hero-mascot-img">
+        <div class="mascot-badge">
+          <span class="mascot-badge-dot"></span> 31 FAQs Activas
+        </div>
+      </div>
+
+      <div class="hero-content">
+        <div class="hero-pill">
+          <span class="pill-sparkle">⚡</span> CHATBOT DE WHATSAPP CON IA & RAG
+        </div>
+        <h1 class="hero-title">
+          FITBOT AI
+          <span class="hero-gradient-text">TU ASISTENTE DE GIMNASIO</span>
+        </h1>
+        <p class="hero-subtitle">
+          Atención automatizada 24/7 para afiliados y prospectos. Respuestas precisas sobre planes, horarios y clases con <strong>Google Gemini</strong> y <strong>Supabase Vector</strong>, derivación a asesor humano y conexión a <strong>n8n</strong>.
+        </p>
+
+        <div class="hero-buttons">
+          <a href="https://wa.me/573177509725?text=Hola%20FitBot" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-lg">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 0C5.396 0 .029 5.367.029 12.002c0 2.119.553 4.186 1.604 6.007L0 24l6.163-1.617c1.761.96 3.746 1.467 5.868 1.467 6.634 0 12.002-5.367 12.002-12.002C24.033 5.367 18.665 0 12.031 0zm.019 21.972c-1.802 0-3.567-.484-5.111-1.399l-.367-.217-3.799.996 1.015-3.7-.239-.379c-1.006-1.6-1.536-3.468-1.536-5.385 0-5.503 4.478-9.98 9.986-9.98 2.666 0 5.172 1.038 7.058 2.925 1.885 1.886 2.923 4.393 2.923 7.06-.002 5.503-4.481 9.98-9.93 9.98zm5.465-7.481c-.299-.149-1.77-.874-2.044-.974-.275-.099-.475-.149-.675.15-.2.299-.774.974-.949 1.173-.175.2-.349.224-.648.075-.3-.149-1.265-.466-2.409-1.486-.89-.794-1.49-1.775-1.665-2.074-.175-.3-.019-.462.13-.611.135-.134.3-.349.45-.523.149-.174.199-.299.299-.499.1-.199.05-.374-.025-.523-.075-.149-.675-1.625-.924-2.224-.243-.585-.49-.505-.675-.515-.175-.008-.374-.01-.573-.01-.2 0-.524.075-.798.374-.274.299-1.049 1.024-1.049 2.499 0 1.474 1.074 2.898 1.224 3.098.15.199 2.114 3.228 5.122 4.528.716.309 1.275.494 1.71.633.72.229 1.375.197 1.893.12.578-.087 1.77-.723 2.02-1.422.249-.699.249-1.298.174-1.422-.074-.124-.274-.199-.573-.349z"/></svg>
+            <span>PROBAR EN WHATSAPP</span>
+          </a>
+
+          <button class="btn btn-discord btn-lg" id="open-qr-hero-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"/></svg>
+            <span>VINCULAR / ESTADO QR</span>
+          </button>
+        </div>
+
+        <div class="hero-tech-tags">
+          <span class="tech-tag">⚡ TypeScript</span>
+          <span class="tech-tag">🤖 Google Gemini</span>
+          <span class="tech-tag">🗄️ Supabase Vector</span>
+          <span class="tech-tag">💬 Baileys WS</span>
+          <span class="tech-tag">🔄 n8n Automation</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Metrics Ribbon -->
+  <section class="metrics-ribbon">
+    <div class="metrics-container">
+      <div class="metric-item">
+        <span class="metric-val" id="metric-faqs">31</span>
+        <span class="metric-lbl">FAQs Vectorizadas</span>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-item">
+        <span class="metric-val">&lt; 1.2s</span>
+        <span class="metric-lbl">Latencia Promedio</span>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-item">
+        <span class="metric-val">100%</span>
+        <span class="metric-lbl">Inbound & Anti-Ban</span>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-item">
+        <span class="metric-val">24/7</span>
+        <span class="metric-lbl">Disponibilidad en la Nube</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid Section -->
+  <section class="features-section" id="features">
+    <div class="section-header">
+      <span class="section-tag">CAPACIDADES DE NIVEL SENIOR</span>
+      <h2 class="section-title">¿Qué hace a FitBot tan potente?</h2>
+      <p class="section-subtitle">Arquitectura diseñada para alta confiabilidad, privacidad y excelente experiencia conversacional.</p>
+    </div>
+
+    <div class="features-grid">
+      <!-- Card 1 -->
+      <div class="feature-card">
+        <div class="card-glow"></div>
+        <div class="feature-icon icon-rag">🧠</div>
+        <h3 class="feature-title">RAG Vectorial con Gemini</h3>
+        <p class="feature-desc">
+          Búsqueda semántica usando embeddings nativos de 3072 dimensiones y similitud de coseno en <strong>Supabase (PostgreSQL + pgvector)</strong>.
+        </p>
+        <div class="feature-badges">
+          <span class="badge">gemini-flash-lite</span>
+          <span class="badge">pgvector</span>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="feature-card">
+        <div class="card-glow"></div>
+        <div class="feature-icon icon-advisor">🧑‍💼</div>
+        <h3 class="feature-title">Derivación a Asesor Humano</h3>
+        <p class="feature-desc">
+          Detección inteligente de intención cuando el cliente pide un asesor. El bot se silencia para ese chat y el asesor lo reactiva con <code>!bot on</code>.
+        </p>
+        <div class="feature-badges">
+          <span class="badge">Handoff</span>
+          <span class="badge">!bot on</span>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="feature-card">
+        <div class="card-glow"></div>
+        <div class="feature-icon icon-timer">⏱️</div>
+        <h3 class="feature-title">Cierre de Sesión por Inactividad</h3>
+        <p class="feature-desc">
+          A los 5 min de inactividad consulta amablemente si necesita algo más, y a los 3 min adicionales cierra la sesión limpiando el historial en memoria.
+        </p>
+        <div class="feature-badges">
+          <span class="badge">Auto-Close</span>
+          <span class="badge">Memory Cleaner</span>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="feature-card">
+        <div class="card-glow"></div>
+        <div class="feature-icon icon-shield">🛡️</div>
+        <h3 class="feature-title">Anti-Ban & Simulación Humana</h3>
+        <p class="feature-desc">
+          Envía el estado <em>"Escribiendo..."</em> con pausa natural, marca lectura con doble check azul y cuenta con Rate Limiting (5 msg/10s).
+        </p>
+        <div class="feature-badges">
+          <span class="badge">Typing Presence</span>
+          <span class="badge">Rate Limit</span>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="feature-card">
+        <div class="card-glow"></div>
+        <div class="feature-icon icon-n8n">🔄</div>
+        <h3 class="feature-title">Automatización con n8n</h3>
+        <p class="feature-desc">
+          Emite eventos vía Webhook hacia n8n para registrar leads automáticamente en Google Sheets y enviar alertas en tiempo real a Telegram.
+        </p>
+        <div class="feature-badges">
+          <span class="badge">Webhooks</span>
+          <span class="badge">Google Sheets</span>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="feature-card">
+        <div class="card-glow"></div>
+        <div class="feature-icon icon-media">🎧</div>
+        <h3 class="feature-title">Soporte Multimedia</h3>
+        <p class="feature-desc">
+          Manejo de notas de voz, fotos de comprobantes Nequi/Daviplata y documentos con orientación contextual amigable.
+        </p>
+        <div class="feature-badges">
+          <span class="badge">Voice Fallback</span>
+          <span class="badge">Receipts</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Demo Prompts Section -->
+  <section class="demo-section" id="demo">
+    <div class="section-header">
+      <span class="section-tag">TEST EN VIVO PARA RECLUTADORES</span>
+      <h2 class="section-title">Preguntas sugeridas para probar el bot</h2>
+      <p class="section-subtitle">Haz clic en cualquier pregunta para copiarla y enviarla a FitBot por WhatsApp.</p>
+    </div>
+
+    <div class="prompts-grid">
+      <div class="prompt-card" data-prompt="¿Cuáles son los horarios de atención y qué pasa en festivos?">
+        <div class="prompt-icon">🕒</div>
+        <div class="prompt-content">
+          <div class="prompt-category">Horarios y Festivos</div>
+          <div class="prompt-text">"¿Cuáles son los horarios de atención y qué pasa en festivos?"</div>
+        </div>
+        <button class="prompt-copy-btn" title="Copiar pregunta">Copiar</button>
+      </div>
+
+      <div class="prompt-card" data-prompt="¿Cuánto cuesta el plan mensual y qué métodos de pago aceptan?">
+        <div class="prompt-icon">💳</div>
+        <div class="prompt-content">
+          <div class="prompt-category">Membresías y Pagos</div>
+          <div class="prompt-text">"¿Cuánto cuesta el plan mensual y qué métodos de pago aceptan?"</div>
+        </div>
+        <button class="prompt-copy-btn" title="Copiar pregunta">Copiar</button>
+      </div>
+
+      <div class="prompt-card" data-prompt="¿Qué clases grupales tienen y en qué horarios se dictan?">
+        <div class="prompt-icon">🚴</div>
+        <div class="prompt-content">
+          <div class="prompt-category">Clases Grupales</div>
+          <div class="prompt-text">"¿Qué clases grupales tienen y en qué horarios se dictan?"</div>
+        </div>
+        <button class="prompt-copy-btn" title="Copiar pregunta">Copiar</button>
+      </div>
+
+      <div class="prompt-card" data-prompt="¿Dónde están ubicados y tienen parqueadero?">
+        <div class="prompt-icon">📍</div>
+        <div class="prompt-content">
+          <div class="prompt-category">Ubicación y Sede</div>
+          <div class="prompt-text">"¿Dónde están ubicados y tienen parqueadero?"</div>
+        </div>
+        <button class="prompt-copy-btn" title="Copiar pregunta">Copiar</button>
+      </div>
+
+      <div class="prompt-card" data-prompt="¿Cómo puedo solicitar un pase de prueba gratis de un día?">
+        <div class="prompt-icon">🎟️</div>
+        <div class="prompt-content">
+          <div class="prompt-category">Pase de Cortesía</div>
+          <div class="prompt-text">"¿Cómo puedo solicitar un pase de prueba gratis de un día?"</div>
+        </div>
+        <button class="prompt-copy-btn" title="Copiar pregunta">Copiar</button>
+      </div>
+
+      <div class="prompt-card" data-prompt="Quiero hablar con un asesor humano">
+        <div class="prompt-icon">🧑‍💼</div>
+        <div class="prompt-content">
+          <div class="prompt-category">Derivación a Humano</div>
+          <div class="prompt-text">"Quiero hablar con un asesor humano"</div>
+        </div>
+        <button class="prompt-copy-btn" title="Copiar pregunta">Copiar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture Section -->
+  <section class="arch-section" id="architecture">
+    <div class="section-header">
+      <span class="section-tag">STACK TECNOLÓGICO</span>
+      <h2 class="section-title">Arquitectura del Sistema</h2>
+    </div>
+
+    <div class="arch-cards-container">
+      <div class="arch-pill">
+        <span class="arch-pill-title">Node.js & TypeScript</span>
+        <span class="arch-pill-desc">Runtime robusto con tipado estricto</span>
+      </div>
+      <div class="arch-pill">
+        <span class="arch-pill-title">Baileys WebSocket</span>
+        <span class="arch-pill-title-desc">Conexión multi-dispositivo directa</span>
+      </div>
+      <div class="arch-pill">
+        <span class="arch-pill-title">Google Gemini SDK</span>
+        <span class="arch-pill-desc">Embeddings + Generación de respuestas</span>
+      </div>
+      <div class="arch-pill">
+        <span class="arch-pill-title">Supabase (pgvector)</span>
+        <span class="arch-pill-desc">Base de datos vectorial con RLS</span>
+      </div>
+      <div class="arch-pill">
+        <span class="arch-pill-title">n8n Workflows</span>
+        <span class="arch-pill-desc">Orquestación de leads y alertas</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- QR Code & Status Modal -->
+  <div class="modal-overlay" id="qr-modal">
+    <div class="modal-card">
+      <button class="modal-close" id="close-qr-modal">&times;</button>
+      
+      <div class="modal-header">
+        <div class="modal-status-badge" id="modal-status-badge">
+          <span class="status-dot"></span>
+          <span class="modal-status-text">Consultando servidor...</span>
+        </div>
+        <h3 class="modal-title">Panel de Conexión de WhatsApp</h3>
+        <p class="modal-subtitle">Escanea el código QR desde tu teléfono para vincular o consulta el estado actual.</p>
+      </div>
+
+      <div class="modal-body">
+        <div class="qr-box" id="qr-container">
+          <div class="qr-loading">
+            <div class="spinner"></div>
+            <span>Cargando estado...</span>
+          </div>
+        </div>
+        <div class="modal-info-box" id="modal-info-text">
+          <p>Para conectar: Abre WhatsApp en tu celular ➡️ Dispositivos vinculados ➡️ Vincular un dispositivo.</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" id="btn-refresh-qr">🔄 Actualizar Estado</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast for prompt copy -->
+  <div class="toast" id="copy-toast">✓ Pregunta copiada al portapapeles</div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <div class="footer-logo">FitBot <span>AI</span></div>
+        <p>Chatbot inteligente con RAG para centros deportivos y gimnasios.</p>
+      </div>
+      <div class="footer-right">
+        <a href="https://github.com/Sanchez042004/chatbot-whatsapp" target="_blank" rel="noopener noreferrer">Repositorio en GitHub</a>
+        <a href="https://wa.me/573177509725?text=Hola%20FitBot" target="_blank" rel="noopener noreferrer">WhatsApp Directo</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 FitBot AI • Desarrollado con Node.js, TypeScript y Google Gemini.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
