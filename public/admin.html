@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>FitBot Admin — Panel de Conexión de WhatsApp</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes scan {
+      0%, 100% { top: 0%; opacity: 0.8; }
+      50% { top: 96%; opacity: 1; }
+    }
+    .scan-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #00F59B, #38BDF8, transparent);
+      box-shadow: 0 0 12px #00F59B;
+      animation: scan 2.5s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-[#08090C] text-[#F1F5F9] font-sans antialiased min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-md rounded-2xl bg-[#0E1117] border border-white/10 p-6 shadow-2xl flex flex-col gap-5">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-[#161B22] border border-white/10 flex items-center justify-center text-[#00F59B]">
+          <span class="material-symbols-outlined text-[18px]">admin_panel_settings</span>
+        </div>
+        <span class="font-bold text-base text-white">FitBot <span class="text-[#00F59B]">Admin</span></span>
+      </div>
+      <div id="admin-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#08090C] border border-yellow-500/30 text-xs font-mono text-yellow-400">
+        <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse"></span>
+        <span id="admin-status-text">Verificando...</span>
+      </div>
+    </div>
+
+    <div class="space-y-1">
+      <h1 class="text-xl font-bold text-white tracking-tight">Vincular Línea de WhatsApp</h1>
+      <p class="text-xs text-slate-400">Escanea este código desde la cuenta oficial de WhatsApp del gimnasio.</p>
+    </div>
+
+    <!-- QR Container -->
+    <div class="relative mx-auto w-64 h-64 rounded-xl bg-[#08090C] border border-white/10 flex items-center justify-center overflow-hidden p-3" id="admin-qr-container">
+      <div class="scan-line"></div>
+      <div class="text-center text-xs text-slate-400 font-mono flex flex-col items-center gap-2">
+        <span class="material-symbols-outlined text-[#00F59B] text-[28px] animate-spin">refresh</span>
+        <span>Cargando código QR...</span>
+      </div>
+    </div>
+
+    <div id="admin-info-text" class="text-xs text-slate-400 bg-[#08090C] p-3 rounded-lg border border-white/5 leading-relaxed">
+      Abre WhatsApp en tu teléfono ➔ <strong>Dispositivos vinculados</strong> ➔ <strong>Vincular un dispositivo</strong> y escanea el código.
+    </div>
+
+    <div class="flex items-center justify-between pt-2 border-t border-white/5">
+      <button id="btn-admin-refresh" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#161B22] hover:bg-[#1C2128] border border-white/10 text-xs font-medium text-white transition-colors">
+        <span class="material-symbols-outlined text-[14px]">refresh</span>
+        <span>Recargar QR</span>
+      </button>
+      <a href="/" class="text-xs text-[#00F59B] hover:underline font-medium flex items-center gap-1">
+        <span>Ir a la Landing Pública</span>
+        <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const qrContainer = document.getElementById('admin-qr-container');
+    const statusText = document.getElementById('admin-status-text');
+    const statusBadge = document.getElementById('admin-status-badge');
+    const infoText = document.getElementById('admin-info-text');
+    const btnRefresh = document.getElementById('btn-admin-refresh');
+
+    async function loadQR() {
+      try {
+        const res = await fetch('/api/qr');
+        const data = await res.json();
+
+        if (data.status === 'open') {
+          statusText.textContent = '🟢 Conectado';
+          statusBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#08090C] border border-emerald-500/40 text-xs font-mono text-emerald-400';
+          qrContainer.innerHTML = `
+            <div class="text-center p-4 flex flex-col items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-[#00F59B] text-[48px]">check_circle</span>
+              <h4 class="font-bold text-sm text-white">¡WhatsApp Vinculado!</h4>
+              <p class="text-xs text-slate-400">El bot está activo y respondiendo consultas en tiempo real.</p>
+            </div>
+          `;
+          infoText.innerHTML = '🎉 El bot está conectado y operando con éxito.';
+        } else if (data.qrImage) {
+          statusText.textContent = '🟡 Esperando Escaneo';
+          statusBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#08090C] border border-yellow-500/40 text-xs font-mono text-yellow-400';
+          qrContainer.innerHTML = `
+            <div class="scan-line"></div>
+            <img src="${data.qrImage}" alt="QR WhatsApp" class="w-full h-full object-contain rounded-lg shadow-md" />
+          `;
+          infoText.innerHTML = 'Abre WhatsApp en tu teléfono ➔ <strong>Dispositivos vinculados</strong> ➔ <strong>Vincular un dispositivo</strong> y escanea el código.';
+        } else {
+          statusText.textContent = '⏳ Iniciando';
+          qrContainer.innerHTML = `<p class="text-xs text-slate-400 font-mono">${data.message || 'Esperando sesión...'}</p>`;
+        }
+      } catch (err) {
+        statusText.textContent = '🔴 Error';
+        qrContainer.innerHTML = '<p class="text-xs text-red-400 font-mono">Error al consultar el servidor.</p>';
+      }
+    }
+
+    btnRefresh?.addEventListener('click', loadQR);
+    loadQR();
+    setInterval(loadQR, 7000);
+  </script>
+</body>
+</html>

@@ -18,20 +18,6 @@
     ::-webkit-scrollbar-track { background: #08090C; }
     ::-webkit-scrollbar-thumb { background: #1C2128; border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: #00F59B; }
-    
-    @keyframes scan {
-      0%, 100% { top: 0%; opacity: 0.8; }
-      50% { top: 96%; opacity: 1; }
-    }
-    .scan-line {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #00F59B, #38BDF8, transparent);
-      box-shadow: 0 0 12px #00F59B;
-      animation: scan 2.5s ease-in-out infinite;
-    }
   </style>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script id="tailwind-config">
@@ -69,7 +55,7 @@
   <!-- NAVIGATION HEADER -->
   <header class="fixed top-0 left-0 w-full z-50 bg-surface-base/85 backdrop-blur-xl border-b border-border-subtle">
     <div class="max-w-7xl mx-auto h-16 px-6 sm:px-8 flex items-center justify-between gap-4">
-      <!-- Logo + Tag -->
+      <!-- Logo + Status -->
       <div class="flex items-center gap-3">
         <a class="flex items-center gap-2 group" href="#">
           <div class="w-8 h-8 rounded-lg bg-surface-raised border border-border-subtle flex items-center justify-center group-hover:border-mint-emerald/50 transition-colors">
@@ -97,12 +83,8 @@
 
       <!-- Header CTAs -->
       <div class="flex items-center gap-3">
-        <button id="open-qr-nav-btn" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-surface-raised hover:bg-surface-hover border border-border-subtle hover:border-mint-emerald/40 text-xs font-medium text-mint-emerald transition-all">
-          <span class="material-symbols-outlined text-[16px]">qr_code_scanner</span>
-          <span>Vincular WhatsApp</span>
-        </button>
         <a class="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-mint-emerald hover:bg-mint-muted text-surface-base text-sm font-semibold transition-all shadow-[0_0_16px_rgba(0,245,155,0.2)]" href="https://wa.me/573177509725?text=Hola%20FitBot" target="_blank" rel="noopener noreferrer">
-          <span>Probar en WhatsApp</span>
+          <span>Chatear en WhatsApp</span>
           <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
         </a>
       </div>
@@ -144,12 +126,7 @@
                 <span>Chatear en WhatsApp</span>
               </a>
 
-              <button id="open-qr-hero-btn" class="flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-surface-raised hover:bg-surface-hover text-text-primary border border-border-subtle hover:border-border-hover font-medium text-sm transition-all">
-                <span class="material-symbols-outlined text-[18px] text-mint-emerald">qr_code_2</span>
-                <span>Vincular / Estado QR</span>
-              </button>
-
-              <a class="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-surface-base hover:bg-surface-raised text-text-secondary hover:text-text-primary border border-border-subtle text-sm transition-all" href="#playground">
+              <a class="flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-surface-raised hover:bg-surface-hover text-text-primary border border-border-subtle hover:border-border-hover text-sm transition-all" href="#playground">
                 <span>Ver Demostración</span>
                 <span class="material-symbols-outlined text-[16px]">arrow_downward</span>
               </a>
@@ -542,51 +519,6 @@ Aceptamos efectivo, tarjetas débito/crédito, PSE, Nequi y Daviplata.</p>
     </section>
   </main>
 
-  <!-- QR CODE & STATUS MODAL -->
-  <div id="qr-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="relative w-full max-w-md rounded-2xl bg-surface-raised border border-border-subtle p-6 shadow-2xl flex flex-col gap-4">
-      <button id="close-qr-modal" class="absolute top-4 right-4 text-text-muted hover:text-text-primary transition-colors">
-        <span class="material-symbols-outlined text-[22px]">close</span>
-      </button>
-      
-      <div class="flex items-center gap-2">
-        <div id="modal-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-base border border-border-subtle text-xs font-mono text-yellow-400">
-          <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse status-dot"></span>
-          <span class="modal-status-text">Consultando servidor...</span>
-        </div>
-      </div>
-
-      <div class="space-y-1">
-        <h3 class="font-display font-bold text-xl text-text-primary">Conexión de WhatsApp</h3>
-        <p class="text-xs text-text-secondary">Escanea el código QR desde la app de WhatsApp para vincular la línea del gimnasio.</p>
-      </div>
-
-      <!-- QR Container with Cyber Laser Scanner Animation -->
-      <div class="relative mx-auto w-64 h-64 rounded-xl bg-surface-base border border-border-subtle flex items-center justify-center overflow-hidden p-3" id="qr-container">
-        <div class="scan-line"></div>
-        <div class="text-center text-xs text-text-muted font-mono flex flex-col items-center gap-2">
-          <span class="material-symbols-outlined text-mint-emerald text-[28px] animate-spin">refresh</span>
-          <span>Generando código QR...</span>
-        </div>
-      </div>
-
-      <div id="modal-info-text" class="text-xs text-text-secondary bg-surface-base p-3 rounded-lg border border-border-subtle leading-relaxed">
-        Abre WhatsApp en tu teléfono ➡️ <strong>Dispositivos vinculados</strong> ➡️ <strong>Vincular un dispositivo</strong> y apunta la cámara.
-      </div>
-
-      <div class="flex items-center justify-between pt-2">
-        <button id="btn-refresh-qr" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-base hover:bg-surface-hover border border-border-subtle text-xs font-medium text-text-primary transition-colors">
-          <span class="material-symbols-outlined text-[14px]">refresh</span>
-          <span>Actualizar QR</span>
-        </button>
-        <a href="https://wa.me/573177509725?text=Hola%20FitBot" target="_blank" class="flex items-center gap-1 text-xs text-mint-emerald hover:underline font-medium">
-          <span>Abrir chat en WhatsApp</span>
-          <span class="material-symbols-outlined text-[13px]">open_in_new</span>
-        </a>
-      </div>
-    </div>
-  </div>
-
   <!-- Toast for prompt copy -->
   <div id="copy-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 px-4 py-2.5 rounded-xl bg-surface-raised border border-mint-emerald/40 text-xs font-medium text-mint-emerald shadow-2xl flex items-center gap-2 pointer-events-none">
     <span class="material-symbols-outlined text-[16px]">check_circle</span>
@@ -610,8 +542,8 @@ Aceptamos efectivo, tarjetas débito/crédito, PSE, Nequi y Daviplata.</p>
 
       <!-- Links -->
       <div class="flex items-center gap-5 text-xs text-text-secondary">
-        <a class="hover:text-text-primary transition-colors flex items-center gap-1 font-medium" href="https://wa.me/573177509725?text=Hola%20FitBot" rel="noopener noreferrer" target="_blank">
-          <span>WhatsApp Oficial</span>
+        <a class="hover:text-text-primary transition-colors flex items-center gap-1 font-medium text-mint-emerald" href="https://wa.me/573177509725?text=Hola%20FitBot" rel="noopener noreferrer" target="_blank">
+          <span>Chatear en WhatsApp</span>
           <span class="material-symbols-outlined text-[13px]">north_east</span>
         </a>
         <a class="hover:text-text-primary transition-colors flex items-center gap-1" href="#overview">
