@@ -9,7 +9,9 @@
     "build": "tsc",
     "seed": "tsx scripts/seed.ts",
     "typecheck": "tsc --noEmit",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test": "tsx scripts/test-faqs.ts",
+    "sim": "tsx scripts/chat-cli.ts"
   },
   "keywords": [],
   "author": "",

@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import makeWASocket, {
   useMultiFileAuthState,
   DisconnectReason,
@@ -12,6 +14,8 @@ import {
   activateAdvisorMode,
   resetUserSession,
 } from './gemini';
+
+const AUTH_DIR = path.resolve(process.cwd(), 'baileys_auth_info');
 
 // ── Configuración de tiempos de inactividad ──
 const INACTIVITY_PROMPT_MS = 5 * 60 * 1000;  // 5 min sin actividad
@@ -160,9 +164,16 @@ export async function startWhatsAppBot(): Promise<void> {
         botState = 'connecting';
         startWhatsAppBot();
       } else {
-        console.log('🚪 Sesión de WhatsApp cerrada (logout). Escanea el QR nuevamente.');
+        console.log('🚪 Sesión de WhatsApp cerrada (logout). Limpiando credenciales y generando nuevo QR...');
         latestQrString = null;
         connectedUserPhone = null;
+        try {
+          fs.rmSync(AUTH_DIR, { recursive: true, force: true });
+        } catch (rmErr) {
+          console.warn('Advertencia limpiando auth dir:', rmErr);
+        }
+        botState = 'connecting';
+        startWhatsAppBot();
       }
     } else if (connection === 'open') {
       botState = 'open';
