@@ -1,14 +1,14 @@
-# FitBot - Gym WhatsApp AI Chatbot
+# FitBot — Gym WhatsApp AI Chatbot
 
-FitBot es un MVP de chatbot para atención al cliente y preguntas frecuentes (FAQs) en WhatsApp, diseñado específicamente para un gimnasio.
+FitBot es un chatbot para atención al cliente y preguntas frecuentes (FAQs) en WhatsApp, diseñado para gimnasios. Responde consultas sobre planes, horarios, clases y más, usando IA (Gemini) con búsqueda semántica (RAG) sobre Supabase.
 
 ## Stack Tecnológico
 
 - **Backend:** Node.js, Express, TypeScript
-- **Integración WhatsApp:** `@whiskeysockets/baileys`
-- **IA / LLM:** Google Gemini API (`gemini-1.5-flash`)
+- **Integración WhatsApp:** `@whiskeysockets/baileys` (conexión directa, sin API oficial de Meta)
+- **IA / LLM:** Google Gemini API (`gemini-flash-lite-latest`)
 - **Base de Datos Vectorial:** Supabase (PostgreSQL + `pgvector`)
-- **CI/CD:** GitHub Actions
+- **Contenerización:** Docker + Docker Compose
 
 ## Configuración Local
 
@@ -20,29 +20,64 @@ npm install
 ```
 
 ### 2. Variables de Entorno
-Crea un archivo `.env` en la raíz (basado en `.env.example`):
+Copia `.env.example` a `.env` y completa los valores:
 ```env
-GEMINI_API_KEY=tu_clave_api
-SUPABASE_URL=tu_supabase_url
+GEMINI_API_KEY=tu_clave_gemini
+SUPABASE_URL=https://tu-proyecto.supabase.co
 SUPABASE_ANON_KEY=tu_supabase_anon_key
 PORT=3000
 ```
 
 ### 3. Base de Datos
-En el SQL Editor de tu proyecto de Supabase, ejecuta el contenido de `schema.sql` para crear la tabla y la función RAG.
+En el SQL Editor de tu proyecto Supabase, ejecuta `schema.sql` para crear las tablas y la función RAG.
 
 ### 4. Cargar Datos Iniciales (Seed)
-Ejecuta el script para llenar la base de datos con las preguntas del gimnasio y generar los embeddings con Gemini:
+Genera los embeddings de las FAQs e insértalos en Supabase:
 ```bash
 npm run seed
 ```
 
 ### 5. Iniciar el Bot
-Ejecuta el servidor:
 ```bash
-npm start
+npm run dev          # Desarrollo (recarga en caliente)
+npm run build && npm start  # Producción
 ```
-Aparecerá un código QR en la consola. Escanéalo desde tu app de WhatsApp (Dispositivos Vinculados) para iniciar la sesión. El bot ahora responderá basándose en el contexto guardado.
+Aparecerá un código QR en la consola. Escanéalo desde WhatsApp → **Dispositivos Vinculados**.
 
-## Despliegue
-Puedes desplegar esta aplicación en servicios gratuitos como Render, Railway o Fly.io, asegurándote de configurar las variables de entorno en la plataforma elegida.
+## Scripts disponibles
+
+| Script | Descripción |
+|--------|-------------|
+| `npm run dev` | Modo desarrollo con recarga automática |
+| `npm run build` | Compila TypeScript → `dist/` |
+| `npm start` | Corre el compilado de `dist/` |
+| `npm run seed` | Carga FAQs en Supabase con embeddings |
+| `npm run typecheck` | Verifica tipos sin compilar |
+
+## Comandos del asesor (desde el propio WhatsApp del bot)
+
+| Comando | Efecto |
+|---------|--------|
+| `!bot off` | Pausa el bot en el chat activo (modo asesor) |
+| `!bot on` | Reactiva el bot en el chat activo |
+
+## Despliegue con Docker
+
+```bash
+# Construir imagen
+docker build -t fitbot .
+
+# Levantar con docker-compose (incluye volumen de sesión)
+docker compose up -d
+
+# Ver logs
+docker compose logs -f
+```
+
+El volumen `baileys_session` persiste la sesión de WhatsApp entre reinicios.
+
+## Monitoreo
+
+- **`GET /health`** — Estado del bot para UptimeRobot / Railway / cron-job.org
+- **`GET /api/status`** — Estado detallado (JSON)
+- **`GET /api/qr`** — QR actual como Data URL (para el panel admin)

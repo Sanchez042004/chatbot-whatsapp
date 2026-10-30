@@ -44,3 +44,29 @@ as $$
   order by documents.embedding <=> query_embedding
   limit match_count;
 $$;
+
+
+-- Create bookings table for gym appointments, free passes, and classes
+create table if not exists bookings (
+  id bigint primary key generated always as identity,
+  phone text not null,
+  name text not null,
+  service_type text not null,
+  booking_date text not null,
+  booking_time text,
+  notes text,
+  status text default 'confirmed',
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Enable Row Level Security (RLS)
+alter table bookings enable row level security;
+
+-- Policy: Allow read and insert access
+create policy if not exists "Allow read access to bookings"
+  on bookings for select
+  using (true);
+
+create policy if not exists "Allow insert access to bookings"
+  on bookings for insert
+  with check (true);

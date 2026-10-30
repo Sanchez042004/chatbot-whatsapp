@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" fill="none">
+  <g opacity="0.08" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- WhatsApp Doodles: Clocks, Coffees, Glasses, Stars, Locks, Phones, Audio, Sports, Cameras -->
+    <!-- Clock -->
+    <circle cx="40" cy="40" r="14" />
+    <path d="M40 32v9l5 4" />
+    
+    <!-- Lock -->
+    <rect x="120" y="35" width="16" height="14" rx="3" />
+    <path d="M124 35v-5a4 4 0 0 1 8 0v5" />
+    <circle cx="128" cy="42" r="1.5" fill="#FFF" />
+
+    <!-- Chat Bubble -->
+    <path d="M220 30c-10 0-18 6-18 14 0 4 2.5 7.5 6.5 10l-2.5 6 7-3.5c2.3.9 4.7 1.5 7 1.5 10 0 18-6 18-14s-8-14-18-14z" />
+
+    <!-- Coffee Mug -->
+    <path d="M310 32h14v16a6 6 0 0 1-6 6h-2a6 6 0 0 1-6-6V32z" />
+    <path d="M324 36h4a3 3 0 0 1 3 3v2a3 3 0 0 1-3 3h-4" />
+    <path d="M313 26c1-2 0-4 1-6M318 26c1-2 0-4 1-6" />
+
+    <!-- Star -->
+    <polygon points="50,130 53,138 62,138 55,143 58,151 50,146 42,151 45,143 38,138 47,138" />
+
+    <!-- Glasses -->
+    <circle cx="140" cy="140" r="10" />
+    <circle cx="170" cy="140" r="10" />
+    <path d="M150 140h10M130 140l-8-5M180 140l8-5" />
+
+    <!-- Headphones -->
+    <path d="M220 150a16 16 0 0 1 32 0" />
+    <rect x="218" y="148" width="5" height="10" rx="2" />
+    <rect x="249" y="148" width="5" height="10" rx="2" />
+
+    <!-- Camera -->
+    <rect x="310" y="130" width="22" height="16" rx="3" />
+    <circle cx="321" cy="138" r="5" />
+    <path d="M316 130l2-4h6l2 4" />
+
+    <!-- Dumbbell / Gym -->
+    <path d="M30 230v20M50 230v20M30 240h20M24 233v14M56 233v14" />
+
+    <!-- Phone / Mobile -->
+    <rect x="130" y="225" width="14" height="24" rx="3" />
+    <line x1="134" y1="244" x2="140" y2="244" />
+
+    <!-- Music Note -->
+    <path d="M230 240v-16l14-4v16M230 232l14-4" />
+    <circle cx="225" cy="240" r="5" fill="#FFF" />
+    <circle cx="239" cy="236" r="5" fill="#FFF" />
+
+    <!-- Heart -->
+    <path d="M320 230c-4-4-10 0-10 5 0 6 10 12 10 12s10-6 10-12c0-5-6-9-10-5z" />
+
+    <!-- Smile Face -->
+    <circle cx="45" cy="330" r="14" />
+    <circle cx="40" cy="326" r="1.5" fill="#FFF" />
+    <circle cx="50" cy="326" r="1.5" fill="#FFF" />
+    <path d="M39 334c2 3 8 3 12 0" />
+
+    <!-- Rocket -->
+    <path d="M140 315c10 0 16 10 16 20l-8 4-4-4-4 4-8-4c0-10 6-20 16-20z" />
+    <circle cx="140" cy="325" r="3" />
+
+    <!-- Lightning / Sparkle -->
+    <polygon points="235,310 225,326 233,326 227,342 243,322 234,322" />
+
+    <!-- Globe / Planet -->
+    <circle cx="325" cy="330" r="12" />
+    <ellipse cx="325" cy="330" rx="12" ry="4" />
+  </g>
+</svg>

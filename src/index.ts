@@ -11,8 +11,19 @@ app.use(express.json());
 const publicDir = path.resolve(process.cwd(), 'public');
 app.use(express.static(publicDir));
 
-// Endpoint de estado para el frontend y monitores (UptimeRobot / cron-job.org)
-app.get('/api/status', (req, res) => {
+// ── Health check para monitoreo (UptimeRobot, Railway, etc.) ──
+app.get('/health', (_req, res) => {
+  const { status, uptimeSeconds } = getBotStatus();
+  res.json({
+    ok: true,
+    status,
+    uptimeSeconds,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Endpoint de estado para el frontend
+app.get('/api/status', (_req, res) => {
   const statusInfo = getBotStatus();
   res.json({
     success: true,
@@ -22,9 +33,9 @@ app.get('/api/status', (req, res) => {
 });
 
 // Endpoint para obtener el código QR como imagen Data URL
-app.get('/api/qr', async (req, res) => {
+app.get('/api/qr', async (_req, res) => {
   const { status, lastQrRaw } = getBotStatus();
-  
+
   if (status === 'open') {
     return res.json({ status: 'open', qrImage: null, message: 'Bot ya conectado' });
   }
@@ -36,11 +47,11 @@ app.get('/api/qr', async (req, res) => {
         width: 300,
         color: {
           dark: '#0a0b0e',
-          light: '#ffffff'
-        }
+          light: '#ffffff',
+        },
       });
       return res.json({ status: 'qr_ready', qrImage });
-    } catch (err) {
+    } catch (_err) {
       return res.status(500).json({ error: 'Error generando imagen QR' });
     }
   }
@@ -48,8 +59,24 @@ app.get('/api/qr', async (req, res) => {
   return res.json({ status, qrImage: null, message: 'Iniciando conexión...' });
 });
 
-app.listen(config.port, () => {
-  console.log(`🌐 Server and Landing Page running on port ${config.port}`);
+const server = app.listen(config.port, () => {
+  console.log(`🌐 Servidor corriendo en el puerto ${config.port}`);
   startWhatsAppBot();
 });
 
+// ── Cierre ordenado ──
+function shutdown(signal: string) {
+  console.log(`\n⚠️  ${signal} recibido. Cerrando servidor...`);
+  server.close(() => {
+    console.log('✅ Servidor cerrado correctamente.');
+    process.exit(0);
+  });
+  // Forzar cierre si tarda más de 10s
+  setTimeout(() => {
+    console.error('❌ Cierre forzado por timeout.');
+    process.exit(1);
+  }, 10_000);
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));

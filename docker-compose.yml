@@ -1,0 +1,23 @@
+services:
+  fitbot:
+    build: .
+    container_name: fitbot
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    volumes:
+      # Persiste la sesión de WhatsApp entre reinicios/despliegues
+      - baileys_session:/app/baileys_auth_info
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  baileys_session:
+    driver: local
+
