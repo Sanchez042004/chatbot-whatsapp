@@ -206,18 +206,25 @@ export async function startWhatsAppBot(): Promise<void> {
     if (msg.key.fromMe) {
       if (!textMessage) return;
       const cmd = textMessage.trim().toLowerCase();
-      if (cmd === '!bot on') {
+
+      // !bot on → reactiva el bot silenciosamente (el comando se auto-elimina para que el cliente no lo vea)
+      if (cmd === '!bot on' || cmd === '!activar') {
+        await sock.sendMessage(from, { delete: msg.key }).catch(() => {});
         deactivateAdvisorMode(from);
         clearUserInactivityTimers(from);
-        await sock.sendMessage(from, { text: '🤖 Bot reactivado para este chat.' });
+        console.log(`🤖 Bot reactivado silenciosamente para ${from}`);
         return;
       }
-      if (cmd === '!bot off') {
+
+      // !bot off → pausa manualmente el bot (el comando se auto-elimina)
+      if (cmd === '!bot off' || cmd === '!pausar') {
+        await sock.sendMessage(from, { delete: msg.key }).catch(() => {});
         activateAdvisorMode(from);
         clearUserInactivityTimers(from);
-        await sock.sendMessage(from, { text: '⏸️ Bot pausado. Estás en modo asesor.' });
+        console.log(`⏸️ Bot pausado manualmente por asesor para ${from}`);
         return;
       }
+
       return; // ignorar otros mensajes propios
     }
 
