@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>FitBot Admin — Panel de Conexión de WhatsApp</title>
+  <title>FitBot Admin — Panel de Conexión y Asesores</title>
   <link href="https://fonts.googleapis.com" rel="preconnect"/>
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
@@ -26,10 +26,10 @@
   </style>
 </head>
 <body class="bg-[#08090C] text-[#F1F5F9] font-sans antialiased min-h-screen flex items-center justify-center p-4">
-  <div class="w-full max-w-md rounded-2xl bg-[#0E1117] border border-white/10 p-6 shadow-2xl flex flex-col gap-5">
+  <div class="w-full max-w-lg rounded-2xl bg-[#0E1117] border border-white/10 p-6 shadow-2xl flex flex-col gap-6">
     
     <!-- Header -->
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between pb-3 border-b border-white/5">
       <div class="flex items-center gap-2">
         <div class="w-8 h-8 rounded-lg bg-[#161B22] border border-white/10 flex items-center justify-center text-[#00F59B]">
           <span class="material-symbols-outlined text-[18px]">admin_panel_settings</span>
@@ -42,28 +42,55 @@
       </div>
     </div>
 
-    <div class="space-y-1">
-      <h1 class="text-xl font-bold text-white tracking-tight">Vincular Línea de WhatsApp</h1>
-      <p class="text-xs text-slate-400">Escanea este código desde la cuenta oficial de WhatsApp del gimnasio.</p>
-    </div>
+    <!-- SECCIÓN 1: Código QR y Estado WhatsApp -->
+    <div class="flex flex-col gap-3">
+      <div class="space-y-0.5">
+        <h2 class="text-sm font-semibold text-white tracking-tight flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px] text-[#00F59B]">qr_code_2</span>
+          <span>Línea Oficial de WhatsApp</span>
+        </h2>
+        <p class="text-xs text-slate-400">Escanea desde WhatsApp para iniciar o mantener activa la sesión.</p>
+      </div>
 
-    <!-- QR Container -->
-    <div class="relative mx-auto w-64 h-64 rounded-xl bg-[#08090C] border border-white/10 flex items-center justify-center overflow-hidden p-3" id="admin-qr-container">
-      <div class="scan-line"></div>
-      <div class="text-center text-xs text-slate-400 font-mono flex flex-col items-center gap-2">
-        <span class="material-symbols-outlined text-[#00F59B] text-[28px] animate-spin">refresh</span>
-        <span>Cargando código QR...</span>
+      <div class="relative mx-auto w-56 h-56 rounded-xl bg-[#08090C] border border-white/10 flex items-center justify-center overflow-hidden p-2" id="admin-qr-container">
+        <div class="scan-line"></div>
+        <div class="text-center text-xs text-slate-400 font-mono flex flex-col items-center gap-2">
+          <span class="material-symbols-outlined text-[#00F59B] text-[24px] animate-spin">refresh</span>
+          <span>Cargando código QR...</span>
+        </div>
+      </div>
+
+      <div id="admin-info-text" class="text-xs text-slate-400 bg-[#08090C] p-2.5 rounded-lg border border-white/5 leading-relaxed text-center">
+        Abre WhatsApp en tu teléfono ➔ <strong>Dispositivos vinculados</strong> ➔ <strong>Vincular un dispositivo</strong>.
       </div>
     </div>
 
-    <div id="admin-info-text" class="text-xs text-slate-400 bg-[#08090C] p-3 rounded-lg border border-white/5 leading-relaxed">
-      Abre WhatsApp en tu teléfono ➔ <strong>Dispositivos vinculados</strong> ➔ <strong>Vincular un dispositivo</strong> y escanea el código.
+    <!-- SECCIÓN 2: Gestión de Asesores Humanos -->
+    <div class="flex flex-col gap-3 pt-4 border-t border-white/5">
+      <div class="flex items-center justify-between">
+        <div class="space-y-0.5">
+          <h2 class="text-sm font-semibold text-white tracking-tight flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px] text-amber-400">support_agent</span>
+            <span>Chats en Atención con Asesor</span>
+          </h2>
+          <p class="text-xs text-slate-400">Finaliza la atención humana para que el bot retome cordialmente.</p>
+        </div>
+        <span id="advisor-count-badge" class="px-2 py-0.5 text-xs font-mono rounded-full bg-surface-base border border-white/10 text-slate-400">0 activos</span>
+      </div>
+
+      <!-- Lista de chats activos con asesor -->
+      <div id="advisor-chats-container" class="flex flex-col gap-2">
+        <div class="text-center py-4 text-xs text-slate-500 font-mono bg-[#08090C] rounded-lg border border-white/5">
+          ✓ No hay clientes en espera de asesor en este momento
+        </div>
+      </div>
     </div>
 
-    <div class="flex items-center justify-between pt-2 border-t border-white/5">
+    <!-- Footer Controls -->
+    <div class="flex items-center justify-between pt-3 border-t border-white/5">
       <button id="btn-admin-refresh" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#161B22] hover:bg-[#1C2128] border border-white/10 text-xs font-medium text-white transition-colors">
         <span class="material-symbols-outlined text-[14px]">refresh</span>
-        <span>Recargar QR</span>
+        <span>Actualizar Estado</span>
       </button>
       <a href="/" class="text-xs text-[#00F59B] hover:underline font-medium flex items-center gap-1">
         <span>Ir a la Landing Pública</span>
@@ -78,6 +105,8 @@
     const statusBadge = document.getElementById('admin-status-badge');
     const infoText = document.getElementById('admin-info-text');
     const btnRefresh = document.getElementById('btn-admin-refresh');
+    const advisorContainer = document.getElementById('advisor-chats-container');
+    const advisorCountBadge = document.getElementById('advisor-count-badge');
 
     async function loadQR() {
       try {
@@ -88,13 +117,13 @@
           statusText.textContent = '🟢 Conectado';
           statusBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#08090C] border border-emerald-500/40 text-xs font-mono text-emerald-400';
           qrContainer.innerHTML = `
-            <div class="text-center p-4 flex flex-col items-center justify-center gap-2">
-              <span class="material-symbols-outlined text-[#00F59B] text-[48px]">check_circle</span>
+            <div class="text-center p-3 flex flex-col items-center justify-center gap-1.5">
+              <span class="material-symbols-outlined text-[#00F59B] text-[40px]">check_circle</span>
               <h4 class="font-bold text-sm text-white">¡WhatsApp Vinculado!</h4>
-              <p class="text-xs text-slate-400">El bot está activo y respondiendo consultas en tiempo real.</p>
+              <p class="text-xs text-slate-400">El bot está activo y conectado.</p>
             </div>
           `;
-          infoText.innerHTML = '🎉 El bot está conectado y operando con éxito.';
+          infoText.innerHTML = '🎉 El bot está conectado y respondiendo mensajes en tiempo real.';
         } else if (data.qrImage) {
           statusText.textContent = '🟡 Esperando Escaneo';
           statusBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#08090C] border border-yellow-500/40 text-xs font-mono text-yellow-400';
@@ -109,13 +138,80 @@
         }
       } catch (err) {
         statusText.textContent = '🔴 Error';
-        qrContainer.innerHTML = '<p class="text-xs text-red-400 font-mono">Error al consultar el servidor.</p>';
+        qrContainer.innerHTML = '<p class="text-xs text-red-400 font-mono">Error consultando el servidor.</p>';
       }
     }
 
-    btnRefresh?.addEventListener('click', loadQR);
+    async function loadAdvisorChats() {
+      try {
+        const res = await fetch('/api/advisor/chats');
+        const data = await res.json();
+        const chats = data.chats || [];
+
+        advisorCountBadge.textContent = `${chats.length} ${chats.length === 1 ? 'activo' : 'activos'}`;
+        if (chats.length > 0) {
+          advisorCountBadge.className = 'px-2 py-0.5 text-xs font-mono rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400';
+        } else {
+          advisorCountBadge.className = 'px-2 py-0.5 text-xs font-mono rounded-full bg-surface-base border border-white/10 text-slate-400';
+        }
+
+        if (chats.length === 0) {
+          advisorContainer.innerHTML = `
+            <div class="text-center py-4 text-xs text-slate-500 font-mono bg-[#08090C] rounded-lg border border-white/5">
+              ✓ No hay clientes en espera de asesor en este momento
+            </div>
+          `;
+          return;
+        }
+
+        advisorContainer.innerHTML = chats.map(chat => `
+          <div class="flex items-center justify-between p-3 rounded-xl bg-[#08090C] border border-amber-500/20 gap-3">
+            <div class="flex flex-col">
+              <span class="font-mono text-xs font-semibold text-white flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span>
+                <span>${chat.phone}</span>
+              </span>
+              <span class="text-[11px] text-slate-400">Atención iniciada a las ${chat.activatedAt} (${chat.minutesActive} min)</span>
+            </div>
+            <button onclick="finishAdvisorChat('${chat.jid}')" class="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#00F59B]/10 hover:bg-[#00F59B]/20 border border-[#00F59B]/30 text-xs font-semibold text-[#00F59B] transition-all">
+              <span class="material-symbols-outlined text-[14px]">smart_toy</span>
+              <span>Finalizar y Retomar Bot</span>
+            </button>
+          </div>
+        `).join('');
+
+      } catch (err) {
+        console.error('Error cargando chats de asesor:', err);
+      }
+    }
+
+    async function finishAdvisorChat(jid) {
+      try {
+        const res = await fetch('/api/advisor/close', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jid })
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadAdvisorChats();
+        } else {
+          alert('No se pudo finalizar la sesión. Verifica la conexión.');
+        }
+      } catch (err) {
+        alert('Error de red al finalizar la atención.');
+      }
+    }
+
+    btnRefresh?.addEventListener('click', () => {
+      loadQR();
+      loadAdvisorChats();
+    });
+
     loadQR();
+    loadAdvisorChats();
     setInterval(loadQR, 7000);
+    setInterval(loadAdvisorChats, 4000);
   </script>
 </body>
 </html>

@@ -2,7 +2,8 @@ import express from 'express';
 import path from 'path';
 import QRCode from 'qrcode';
 import { config } from './config/env';
-import { startWhatsAppBot, getBotStatus } from './services/whatsapp';
+import { startWhatsAppBot, getBotStatus, endAdvisorSessionAndResume } from './services/whatsapp';
+import { getActiveAdvisorChats } from './services/gemini';
 
 const app = express();
 app.use(express.json());
@@ -30,6 +31,22 @@ app.get('/api/status', (_req, res) => {
     ...statusInfo,
     timestamp: new Date().toISOString(),
   });
+});
+
+// Endpoint para ver chats activos con asesor humano
+app.get('/api/advisor/chats', (_req, res) => {
+  const chats = getActiveAdvisorChats();
+  res.json({ success: true, chats });
+});
+
+// Endpoint para finalizar atención del asesor y que el bot pregunte cordialmente si tiene otra duda
+app.post('/api/advisor/close', async (req, res) => {
+  const { jid } = req.body;
+  if (!jid) {
+    return res.status(400).json({ error: 'Falta el parámetro jid' });
+  }
+  const ok = await endAdvisorSessionAndResume(jid);
+  return res.json({ success: ok });
 });
 
 // Endpoint para obtener el código QR como imagen Data URL

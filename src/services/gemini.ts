@@ -9,27 +9,51 @@ export interface ChatMessage {
   parts: ChatPart[];
 }
 
+export interface ActiveAdvisorChat {
+  jid: string;
+  phone: string;
+  minutesActive: number;
+  activatedAt: string;
+}
+
 const historyMap = new Map<string, ChatMessage[]>();
-const advisorModeSet = new Set<string>(); // usuarios en atención con asesor humano
+// Mapa de usuarios en atención con asesor y fecha de inicio
+const advisorModeMap = new Map<string, { activatedAt: number }>();
 const pendingAdvisorOffer = new Set<string>(); // usuarios a quienes se les ofreció asesor
 const CONFIRM_KEYWORDS = ['si', 'sí', 'claro', 'ok', 'dale', 'por favor', 'quiero', 'yes', 'bueno'];
 
 /** Indica si el bot está pausado para este usuario (asesor activo) */
 export function isAwaitingAdvisor(from: string): boolean {
-  return advisorModeSet.has(from);
+  return advisorModeMap.has(from);
 }
 
 /** Activa el modo asesor para un usuario */
 export function activateAdvisorMode(from: string): void {
-  advisorModeSet.add(from);
+  advisorModeMap.set(from, { activatedAt: Date.now() });
   historyMap.delete(from);
   console.log(`🧑‍💼 Modo asesor activado para ${from}`);
 }
 
 /** Desactiva el modo asesor (reactiva el bot) */
 export function deactivateAdvisorMode(from: string): void {
-  advisorModeSet.delete(from);
-  console.log(`🤖 Bot reactivado para ${from}`);
+  advisorModeMap.delete(from);
+  console.log(`🤖 Modo asesor finalizado para ${from}`);
+}
+
+/** Lista los chats actualmente en atención con asesor humano */
+export function getActiveAdvisorChats(): ActiveAdvisorChat[] {
+  const now = Date.now();
+  const list: ActiveAdvisorChat[] = [];
+  for (const [jid, data] of advisorModeMap.entries()) {
+    const rawNumber = jid.split('@')[0] || jid;
+    list.push({
+      jid,
+      phone: '+' + rawNumber.replace(/[^\d]/g, ''),
+      minutesActive: Math.max(0, Math.floor((now - data.activatedAt) / 60000)),
+      activatedAt: new Date(data.activatedAt).toLocaleTimeString(),
+    });
+  }
+  return list;
 }
 
 /** Reinicia la sesión y el historial de un usuario */

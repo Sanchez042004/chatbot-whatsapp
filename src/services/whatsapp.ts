@@ -18,8 +18,9 @@ import {
 const AUTH_DIR = path.resolve(process.cwd(), 'baileys_auth_info');
 
 // ── Configuración de tiempos de inactividad ──
-const INACTIVITY_PROMPT_MS = 5 * 60 * 1000;  // 5 min sin actividad
+const INACTIVITY_PROMPT_MS = 5 * 60 * 1000;  // 5 min sin actividad del usuario
 const INACTIVITY_CLOSE_MS  = 3 * 60 * 1000;  // +3 min → cerrar sesión
+const ADVISOR_AUTO_RESUME_MS = 15 * 60 * 1000; // 15 min de silencio durante atención humana
 
 interface UserTimers {
   promptTimer?: NodeJS.Timeout;
@@ -27,6 +28,9 @@ interface UserTimers {
 }
 
 const userSessionTimers = new Map<string, UserTimers>();
+const advisorInactivityTimers = new Map<string, NodeJS.Timeout>();
+
+let currentSock: ReturnType<typeof makeWASocket> | null = null;
 
 /** Cancela todos los temporizadores de inactividad de un usuario */
 function clearUserInactivityTimers(from: string) {
@@ -36,6 +40,27 @@ function clearUserInactivityTimers(from: string) {
     if (current.closeTimer)  clearTimeout(current.closeTimer);
     userSessionTimers.delete(from);
   }
+}
+
+/** Cancela el temporizador de inactividad del asesor */
+function clearAdvisorInactivityTimer(from: string) {
+  const timer = advisorInactivityTimers.get(from);
+  if (timer) {
+    clearTimeout(timer);
+    advisorInactivityTimers.delete(from);
+  }
+}
+
+/** Programa auto-reactivación si el asesor y el cliente llevan 15 min sin hablar */
+function scheduleAdvisorInactivityTimer(from: string) {
+  clearAdvisorInactivityTimer(from);
+  const timer = setTimeout(() => {
+    if (isAwaitingAdvisor(from)) {
+      console.log(`⏳ Auto-retomando conversación por inactividad del asesor para ${from}`);
+      endAdvisorSessionAndResume(from);
+    }
+  }, ADVISOR_AUTO_RESUME_MS);
+  advisorInactivityTimers.set(from, timer);
 }
 
 /** Programa o reinicia los temporizadores de inactividad tras una respuesta del bot */
@@ -72,6 +97,28 @@ function scheduleInactivityTimers(from: string, sock: ReturnType<typeof makeWASo
   }, INACTIVITY_PROMPT_MS);
 
   userSessionTimers.set(from, { promptTimer });
+}
+
+/**
+ * Finaliza la atención humana del asesor y retoma el bot de manera 100% natural,
+ * preguntando cordialmente si el usuario tiene alguna otra duda.
+ */
+export async function endAdvisorSessionAndResume(jid: string): Promise<boolean> {
+  if (!currentSock) return false;
+  clearAdvisorInactivityTimer(jid);
+  deactivateAdvisorMode(jid);
+  clearUserInactivityTimers(jid);
+
+  const followUpMessage = 'Hola de nuevo 👋 Esperamos haber resuelto tu consulta. ¿Hay algo más en lo que te pueda colaborar el día de hoy? ¡Estoy aquí para ayudarte! 💪';
+  try {
+    await currentSock.sendMessage(jid, { text: followUpMessage });
+    scheduleInactivityTimers(jid, currentSock);
+    console.log(`🤖 Atención con asesor finalizada para ${jid}. Mensaje de seguimiento enviado.`);
+    return true;
+  } catch (err) {
+    console.error('Error enviando mensaje de seguimiento tras asesor:', err);
+    return false;
+  }
 }
 
 // ── Caché de deduplicación de mensajes ──
@@ -144,6 +191,8 @@ export async function startWhatsAppBot(): Promise<void> {
     syncFullHistory: false,
   });
 
+  currentSock = sock;
+
   // ── Eventos de conexión ──
   sock.ev.on('connection.update', (update) => {
     const { connection, lastDisconnect, qr } = update;
@@ -157,6 +206,7 @@ export async function startWhatsAppBot(): Promise<void> {
 
     if (connection === 'close') {
       botState = 'close';
+      currentSock = null;
       const statusCode = (lastDisconnect?.error as Boom)?.output?.statusCode;
       const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
       console.log(`🔌 Conexión cerrada (código ${statusCode}), reconectando: ${shouldReconnect}`);
@@ -202,30 +252,22 @@ export async function startWhatsAppBot(): Promise<void> {
       msg.message.conversation ||
       msg.message.extendedTextMessage?.text;
 
-    // ── Comandos del asesor (mensajes enviados desde el propio WhatsApp del bot) ──
+    // ── Mensajes enviados desde el propio WhatsApp del bot (Asesor) ──
     if (msg.key.fromMe) {
       if (!textMessage) return;
       const cmd = textMessage.trim().toLowerCase();
 
-      // !bot on → reactiva el bot silenciosamente (el comando se auto-elimina para que el cliente no lo vea)
-      if (cmd === '!bot on' || cmd === '!activar') {
-        await sock.sendMessage(from, { delete: msg.key }).catch(() => {});
-        deactivateAdvisorMode(from);
-        clearUserInactivityTimers(from);
-        console.log(`🤖 Bot reactivado silenciosamente para ${from}`);
+      // Palabras que el asesor puede enviar en el chat para cerrar y que el bot retome cordialmente
+      if (cmd === '!bot on' || cmd === '!listo' || cmd === '!cerrar' || cmd === '!terminar') {
+        endAdvisorSessionAndResume(from);
         return;
       }
 
-      // !bot off → pausa manualmente el bot (el comando se auto-elimina)
-      if (cmd === '!bot off' || cmd === '!pausar') {
-        await sock.sendMessage(from, { delete: msg.key }).catch(() => {});
-        activateAdvisorMode(from);
-        clearUserInactivityTimers(from);
-        console.log(`⏸️ Bot pausado manualmente por asesor para ${from}`);
-        return;
+      // Si el asesor escribe normalmente al cliente, renovar el temporizador de inactividad de 15 min
+      if (isAwaitingAdvisor(from)) {
+        scheduleAdvisorInactivityTimer(from);
       }
-
-      return; // ignorar otros mensajes propios
+      return; // no procesar mensajes propios
     }
 
     // ── Mensajes del usuario ──
@@ -274,24 +316,16 @@ export async function startWhatsAppBot(): Promise<void> {
       return;
     }
 
-    // Reactivación manual desde el cliente
-    const cleanText = textMessage.trim().toLowerCase();
-    if (cleanText === '!bot on' || cleanText === '!activar') {
-      deactivateAdvisorMode(from);
-      clearUserInactivityTimers(from);
-      await sock.sendMessage(from, { text: '🤖 ¡Bot reactivado! Estoy listo para responder.' });
-      return;
-    }
-
-    // Si está en modo asesor, el bot no interfiere
+    // Si está en modo asesor, el cliente sigue hablando con el humano
     if (isAwaitingAdvisor(from)) {
-      console.log(`⏸️  Usuario ${from} en modo asesor — bot pausado.`);
+      scheduleAdvisorInactivityTimer(from);
+      console.log(`🧑‍💼 Usuario ${from} en conversación con asesor humano.`);
       return;
     }
 
     clearUserInactivityTimers(from);
 
-    // Simular presencia humana mientras la IA procesa
+    // Simular presencia humana mientras la lógica procesa
     await sock.sendPresenceUpdate('composing', from).catch(() => {});
     const startTime = Date.now();
 
@@ -306,6 +340,7 @@ export async function startWhatsAppBot(): Promise<void> {
 
     if (isAwaitingAdvisor(from)) {
       clearUserInactivityTimers(from);
+      scheduleAdvisorInactivityTimer(from);
     } else {
       scheduleInactivityTimers(from, sock);
     }
