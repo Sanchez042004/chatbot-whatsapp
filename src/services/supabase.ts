@@ -1,7 +1,19 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { config } from '../config/env';
+import { logger } from '../utils/logger';
 
-export const supabase = createClient(config.supabase.url, config.supabase.anonKey);
+let supabaseClient: SupabaseClient | null = null;
+
+if (config.supabase.url && config.supabase.anonKey) {
+  try {
+    supabaseClient = createClient(config.supabase.url, config.supabase.anonKey);
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    logger.warn(`No se pudo inicializar cliente de Supabase: ${errorMsg}`);
+  }
+}
+
+export const supabase = supabaseClient;
 
 export interface MatchedDocument {
   id: number;
@@ -10,6 +22,8 @@ export interface MatchedDocument {
 }
 
 export async function getBusinessContext(queryEmbedding: number[]): Promise<string> {
+  if (!supabase) return '';
+
   const { data, error } = await supabase.rpc('match_documents', {
     query_embedding: queryEmbedding,
     match_threshold: 0.1,
@@ -17,18 +31,20 @@ export async function getBusinessContext(queryEmbedding: number[]): Promise<stri
   });
 
   if (error) {
-    console.error('Error in match_documents RPC:', error);
+    logger.error('Error in match_documents RPC', { error: error.message });
     return '';
   }
 
   const documents = data as MatchedDocument[] | null;
 
   if (!documents || documents.length === 0) {
-    console.warn('⚠️ No matching documents found for the query embedding.');
+    logger.warn('No matching documents found for the query embedding');
     return '';
   }
 
-  console.log(`🔍 Encontrados ${documents.length} documentos coincidentes. Similitud principal: ${documents[0]?.similarity?.toFixed(4)}`);
+  logger.info(
+    `Encontrados ${documents.length} documentos coincidentes. Similitud: ${documents[0]?.similarity?.toFixed(4)}`,
+  );
   const context = documents.map((doc) => doc.content).join('\n---\n');
   return context;
 }
@@ -42,7 +58,13 @@ export interface BookingData {
   notes?: string;
 }
 
-export async function saveBooking(data: BookingData): Promise<{ success: boolean; id?: number; error?: string }> {
+export async function saveBooking(
+  data: BookingData,
+): Promise<{ success: boolean; id?: number; error?: string }> {
+  if (!supabase) {
+    return { success: false, error: 'Supabase no está configurado' };
+  }
+
   try {
     const { data: inserted, error } = await supabase
       .from('bookings')
@@ -59,14 +81,15 @@ export async function saveBooking(data: BookingData): Promise<{ success: boolean
       .single();
 
     if (error) {
-      console.warn('⚠️ [Supabase] Nota: Asegúrate de ejecutar schema.sql si la tabla bookings no existe aún:', error.message);
+      logger.warn('Error al guardar reserva en Supabase', { message: error.message });
       return { success: false, error: error.message };
     }
 
-    console.log(`✅ [Supabase] Reserva guardada con éxito (ID: ${inserted?.id}) para ${data.name}`);
+    logger.info(`Reserva guardada con éxito (ID: ${inserted?.id}) para ${data.name}`);
     return { success: true, id: inserted?.id };
-  } catch (err: any) {
-    console.error('❌ [Supabase] Error inesperado guardando reserva:', err?.message || err);
-    return { success: false, error: err?.message };
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    logger.error('Error inesperado guardando reserva', { error: errorMsg });
+    return { success: false, error: errorMsg };
   }
 }

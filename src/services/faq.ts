@@ -5,7 +5,15 @@
 
 export interface FAQMatchResult {
   matched: boolean;
-  category?: 'horarios' | 'planes' | 'clases' | 'requisitos' | 'freepass' | 'ubicacion' | 'advisor' | 'greeting';
+  category?:
+    | 'horarios'
+    | 'planes'
+    | 'clases'
+    | 'requisitos'
+    | 'freepass'
+    | 'ubicacion'
+    | 'advisor'
+    | 'greeting';
   response: string;
 }
 
@@ -20,8 +28,8 @@ export function normalizeText(text: string): string {
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '') // elimina acentos
-    .replace(/[^\w\s]/gi, ' ')       // reemplaza signos por espacio
-    .replace(/\s+/g, ' ')            // colapsa espacios
+    .replace(/[^\w\s]/gi, ' ') // reemplaza signos por espacio
+    .replace(/\s+/g, ' ') // colapsa espacios
     .trim();
 }
 
@@ -36,7 +44,7 @@ function containsKeyword(normalizedText: string, keyword: string): boolean {
 }
 
 function anyKeyword(normalizedText: string, keywords: string[]): boolean {
-  return keywords.some(kw => containsKeyword(normalizedText, kw));
+  return keywords.some((kw) => containsKeyword(normalizedText, kw));
 }
 
 export const ADVISOR_KEYWORDS = [
@@ -50,7 +58,7 @@ export const ADVISOR_KEYWORDS = [
   'quiero asesor',
   'necesito asesor',
   'operador',
-  'recepcion'
+  'recepcion',
 ];
 
 export const GREETING_KEYWORDS = [
@@ -67,7 +75,7 @@ export const GREETING_KEYWORDS = [
   'buen dia',
   'inicio',
   'empezar',
-  'menu'
+  'menu',
 ];
 
 export const FAQ_RESPONSES = {
@@ -144,7 +152,7 @@ Por favor escribe alguna de las siguientes opciones o palabras clave para brinda
 • 📍 *Ubicación y parqueadero gratuito*
 • 🧑‍💼 *Hablar con un asesor* (escribe *"asesor"*)
 
-¡Escríbeme tu duda y con gusto te ayudo! 💪`
+¡Escríbeme tu duda y con gusto te ayudo! 💪`,
 };
 
 /**
@@ -158,108 +166,198 @@ export function matchFAQ(rawMessage: string): FAQMatchResult {
     return {
       matched: true,
       category: 'advisor',
-      response: FAQ_RESPONSES.advisor
+      response: FAQ_RESPONSES.advisor,
     };
   }
 
   // 2. Saludo o menú
-  const isGreeting = GREETING_KEYWORDS.some(kw => {
+  const isGreeting = GREETING_KEYWORDS.some((kw) => {
     return normalized === kw || normalized.startsWith(kw + ' ') || normalized.endsWith(' ' + kw);
   });
   if (isGreeting && normalized.split(' ').length <= 4) {
     return {
       matched: true,
       category: 'greeting',
-      response: FAQ_RESPONSES.menu
+      response: FAQ_RESPONSES.menu,
     };
   }
 
   // 3. Ubicación y Parqueadero (evaluar antes para evitar colisión de parqueadero)
   const ubicacionKeywords = [
-    'ubicacion', 'ubicados', 'ubicado', 'direccion', 'donde queda', 'donde quedan',
-    'donde estan', 'donde es', 'como llegar', 'parqueadero', 'parqueaderos',
-    'estacionamiento', 'parquear', 'parqueo', 'mapa', 'sede', 'cra 8'
+    'ubicacion',
+    'ubicados',
+    'ubicado',
+    'direccion',
+    'donde queda',
+    'donde quedan',
+    'donde estan',
+    'donde es',
+    'como llegar',
+    'parqueadero',
+    'parqueaderos',
+    'estacionamiento',
+    'parquear',
+    'parqueo',
+    'mapa',
+    'sede',
+    'cra 8',
   ];
   if (anyKeyword(normalized, ubicacionKeywords)) {
     return {
       matched: true,
       category: 'ubicacion',
-      response: FAQ_RESPONSES.ubicacion
+      response: FAQ_RESPONSES.ubicacion,
     };
   }
 
   // 4. Free Pass / Pase de prueba
   const freePassKeywords = [
-    'free pass', 'freepass', 'pase', 'pases', 'prueba', 'cortesia', 'gratis',
-    'dia gratis', 'clase gratis', 'probar', 'conocer'
+    'free pass',
+    'freepass',
+    'pase',
+    'pases',
+    'prueba',
+    'cortesia',
+    'gratis',
+    'dia gratis',
+    'clase gratis',
+    'probar',
+    'conocer',
   ];
   if (anyKeyword(normalized, freePassKeywords)) {
     return {
       matched: true,
       category: 'freepass',
-      response: FAQ_RESPONSES.freepass
+      response: FAQ_RESPONSES.freepass,
     };
   }
 
   // 5. Horarios
   const horarioKeywords = [
-    'horario', 'horarios', 'hora', 'horas', 'abren', 'abierto', 'abre',
-    'cierran', 'cierra', 'cerrado', 'festivo', 'festivos', 'domingo', 'domingos',
-    'sabado', 'sabados', 'lunes', 'puente', 'hora pico', 'atienden'
+    'horario',
+    'horarios',
+    'hora',
+    'horas',
+    'abren',
+    'abierto',
+    'abre',
+    'cierran',
+    'cierra',
+    'cerrado',
+    'festivo',
+    'festivos',
+    'domingo',
+    'domingos',
+    'sabado',
+    'sabados',
+    'lunes',
+    'puente',
+    'hora pico',
+    'atienden',
   ];
   if (anyKeyword(normalized, horarioKeywords)) {
     return {
       matched: true,
       category: 'horarios',
-      response: FAQ_RESPONSES.horarios
+      response: FAQ_RESPONSES.horarios,
     };
   }
 
   // 6. Planes y Precios
   const planesKeywords = [
-    'plan', 'planes', 'precio', 'precios', 'costo', 'costos', 'tarifa', 'tarifas',
-    'cuanto vale', 'cuanto cuesta', 'mensualidad', 'mensual', 'premium', 'anual',
-    'suscripcion', 'membresia', 'metodos de pago', 'formas de pago', 'nequi',
-    'daviplata', 'tarjeta', 'tarjetas', 'efectivo', 'congelar', 'cancelar', 'permanencia'
+    'plan',
+    'planes',
+    'precio',
+    'precios',
+    'costo',
+    'costos',
+    'tarifa',
+    'tarifas',
+    'cuanto vale',
+    'cuanto cuesta',
+    'mensualidad',
+    'mensual',
+    'premium',
+    'anual',
+    'suscripcion',
+    'membresia',
+    'metodos de pago',
+    'formas de pago',
+    'nequi',
+    'daviplata',
+    'tarjeta',
+    'tarjetas',
+    'efectivo',
+    'congelar',
+    'cancelar',
+    'permanencia',
   ];
   if (anyKeyword(normalized, planesKeywords)) {
     return {
       matched: true,
       category: 'planes',
-      response: FAQ_RESPONSES.planes
+      response: FAQ_RESPONSES.planes,
     };
   }
 
   // 7. Clases grupales
   const clasesKeywords = [
-    'clase', 'clases', 'spinning', 'spin', 'yoga', 'pilates', 'zumba',
-    'crossfit', 'funcional', 'baile', 'grupal', 'grupales', 'cupo', 'reserva', 'reservar'
+    'clase',
+    'clases',
+    'spinning',
+    'spin',
+    'yoga',
+    'pilates',
+    'zumba',
+    'crossfit',
+    'funcional',
+    'baile',
+    'grupal',
+    'grupales',
+    'cupo',
+    'reserva',
+    'reservar',
   ];
   if (anyKeyword(normalized, clasesKeywords)) {
     return {
       matched: true,
       category: 'clases',
-      response: FAQ_RESPONSES.clases
+      response: FAQ_RESPONSES.clases,
     };
   }
 
   // 8. Requisitos de ingreso
   const requisitosKeywords = [
-    'requisito', 'requisitos', 'inscribir', 'inscripcion', 'afiliar', 'afiliacion',
-    'edad', 'edad minima', 'menor', 'menores', 'par q', 'parq', 'documento',
-    'cedula', 'que necesito', 'ropa', 'toalla', 'candado'
+    'requisito',
+    'requisitos',
+    'inscribir',
+    'inscripcion',
+    'afiliar',
+    'afiliacion',
+    'edad',
+    'edad minima',
+    'menor',
+    'menores',
+    'par q',
+    'parq',
+    'documento',
+    'cedula',
+    'que necesito',
+    'ropa',
+    'toalla',
+    'candado',
   ];
   if (anyKeyword(normalized, requisitosKeywords)) {
     return {
       matched: true,
       category: 'requisitos',
-      response: FAQ_RESPONSES.requisitos
+      response: FAQ_RESPONSES.requisitos,
     };
   }
 
   // No coincide con ninguna FAQ específica
   return {
     matched: false,
-    response: FAQ_RESPONSES.fallback
+    response: FAQ_RESPONSES.fallback,
   };
 }

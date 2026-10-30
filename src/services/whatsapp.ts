@@ -11,15 +11,15 @@ import {
   generateResponse,
   isAwaitingAdvisor,
   deactivateAdvisorMode,
-  activateAdvisorMode,
   resetUserSession,
 } from './gemini';
+import { logger } from '../utils/logger';
 
 const AUTH_DIR = path.resolve(process.cwd(), 'baileys_auth_info');
 
 // ── Configuración de tiempos de inactividad ──
-const INACTIVITY_PROMPT_MS = 5 * 60 * 1000;  // 5 min sin actividad del usuario
-const INACTIVITY_CLOSE_MS  = 3 * 60 * 1000;  // +3 min → cerrar sesión
+const INACTIVITY_PROMPT_MS = 5 * 60 * 1000; // 5 min sin actividad del usuario
+const INACTIVITY_CLOSE_MS = 3 * 60 * 1000; // +3 min → cerrar sesión
 const ADVISOR_AUTO_RESUME_MS = 15 * 60 * 1000; // 15 min de silencio durante atención humana
 
 interface UserTimers {
@@ -33,17 +33,17 @@ const advisorInactivityTimers = new Map<string, NodeJS.Timeout>();
 let currentSock: ReturnType<typeof makeWASocket> | null = null;
 
 /** Cancela todos los temporizadores de inactividad de un usuario */
-function clearUserInactivityTimers(from: string) {
+function clearUserInactivityTimers(from: string): void {
   const current = userSessionTimers.get(from);
   if (current) {
     if (current.promptTimer) clearTimeout(current.promptTimer);
-    if (current.closeTimer)  clearTimeout(current.closeTimer);
+    if (current.closeTimer) clearTimeout(current.closeTimer);
     userSessionTimers.delete(from);
   }
 }
 
 /** Cancela el temporizador de inactividad del asesor */
-function clearAdvisorInactivityTimer(from: string) {
+function clearAdvisorInactivityTimer(from: string): void {
   const timer = advisorInactivityTimers.get(from);
   if (timer) {
     clearTimeout(timer);
@@ -52,19 +52,21 @@ function clearAdvisorInactivityTimer(from: string) {
 }
 
 /** Programa auto-reactivación si el asesor y el cliente llevan 15 min sin hablar */
-function scheduleAdvisorInactivityTimer(from: string) {
+function scheduleAdvisorInactivityTimer(from: string): void {
   clearAdvisorInactivityTimer(from);
   const timer = setTimeout(() => {
     if (isAwaitingAdvisor(from)) {
-      console.log(`⏳ Auto-retomando conversación por inactividad del asesor para ${from}`);
-      endAdvisorSessionAndResume(from);
+      logger.info(`Auto-retomando conversación por inactividad del asesor para ${from}`);
+      endAdvisorSessionAndResume(from).catch((err: unknown) => {
+        logger.error('Error en auto-reactivación por inactividad', { error: String(err) });
+      });
     }
   }, ADVISOR_AUTO_RESUME_MS);
   advisorInactivityTimers.set(from, timer);
 }
 
 /** Programa o reinicia los temporizadores de inactividad tras una respuesta del bot */
-function scheduleInactivityTimers(from: string, sock: ReturnType<typeof makeWASocket>) {
+function scheduleInactivityTimers(from: string, sock: ReturnType<typeof makeWASocket>): void {
   clearUserInactivityTimers(from);
 
   const promptTimer = setTimeout(async () => {
@@ -73,26 +75,26 @@ function scheduleInactivityTimers(from: string, sock: ReturnType<typeof makeWASo
       await sock.sendMessage(from, {
         text: 'Hola 👋 ¿Hay algo más en lo que te pueda colaborar el día de hoy? ¡Estoy aquí para ayudarte! 💪',
       });
-      console.log(`⏳ Seguimiento por inactividad enviado a ${from}`);
+      logger.info(`Seguimiento por inactividad enviado a ${from}`);
 
       const closeTimer = setTimeout(async () => {
         if (isAwaitingAdvisor(from)) return;
         try {
           await sock.sendMessage(from, {
-            text: 'Damos por finalizada tu consulta por el momento. Si necesitas algo más adelante, solo escríbenos. ¡Que tengas un excelente día y un gran entrenamiento! 🏋️‍♂️✨',
+            text: 'Damos por finalizada tu consulta por el momento. Si necesitas algo más adelante, solo escríbenos. ¡Que tengas un excelente día! ✨',
           });
           resetUserSession(from);
           clearUserInactivityTimers(from);
-          console.log(`🔒 Sesión cerrada por inactividad para ${from}`);
-        } catch (err) {
-          console.error('Error enviando mensaje de cierre:', err);
+          logger.info(`Sesión cerrada por inactividad para ${from}`);
+        } catch (err: unknown) {
+          logger.error('Error enviando mensaje de cierre', { error: String(err) });
         }
       }, INACTIVITY_CLOSE_MS);
 
       const timers = userSessionTimers.get(from);
       if (timers) timers.closeTimer = closeTimer;
-    } catch (err) {
-      console.error('Error enviando mensaje de inactividad:', err);
+    } catch (err: unknown) {
+      logger.error('Error enviando mensaje de inactividad', { error: String(err) });
     }
   }, INACTIVITY_PROMPT_MS);
 
@@ -100,7 +102,7 @@ function scheduleInactivityTimers(from: string, sock: ReturnType<typeof makeWASo
 }
 
 /**
- * Finaliza la atención humana del asesor y retoma el bot de manera 100% natural,
+ * Finaliza la atención humana del asesor y retoma el bot de manera natural,
  * preguntando cordialmente si el usuario tiene alguna otra duda.
  */
 export async function endAdvisorSessionAndResume(jid: string): Promise<boolean> {
@@ -109,14 +111,15 @@ export async function endAdvisorSessionAndResume(jid: string): Promise<boolean> 
   deactivateAdvisorMode(jid);
   clearUserInactivityTimers(jid);
 
-  const followUpMessage = 'Hola de nuevo 👋 Esperamos haber resuelto tu consulta. ¿Hay algo más en lo que te pueda colaborar el día de hoy? ¡Estoy aquí para ayudarte! 💪';
+  const followUpMessage =
+    'Hola de nuevo 👋 Esperamos haber resuelto tu consulta. ¿Hay algo más en lo que te pueda colaborar el día de hoy? ¡Estoy aquí para ayudarte! 💪';
   try {
     await currentSock.sendMessage(jid, { text: followUpMessage });
     scheduleInactivityTimers(jid, currentSock);
-    console.log(`🤖 Atención con asesor finalizada para ${jid}. Mensaje de seguimiento enviado.`);
+    logger.info(`Atención con asesor finalizada para ${jid}. Mensaje de seguimiento enviado.`);
     return true;
-  } catch (err) {
-    console.error('Error enviando mensaje de seguimiento tras asesor:', err);
+  } catch (err: unknown) {
+    logger.error('Error enviando mensaje de seguimiento tras asesor', { error: String(err) });
     return false;
   }
 }
@@ -138,7 +141,7 @@ function isDuplicateMessage(messageId: string | null | undefined): boolean {
 
 // ── Control de Tasa (Rate Limiting) ──
 const userRateLimits = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT_WINDOW_MS    = 10 * 1000;
+const RATE_LIMIT_WINDOW_MS = 10 * 1000;
 const MAX_MESSAGES_PER_WINDOW = 5;
 
 function checkRateLimit(from: string): boolean {
@@ -180,7 +183,7 @@ export function getBotStatus(): BotStatusInfo {
 // ── Función principal del bot ──
 export async function startWhatsAppBot(): Promise<void> {
   const { version } = await fetchLatestBaileysVersion();
-  console.log(`📱 Usando Baileys v${version.join('.')}`);
+  logger.info(`Iniciando conexión WhatsApp con Baileys v${version.join('.')}`);
 
   const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info');
 
@@ -200,7 +203,7 @@ export async function startWhatsAppBot(): Promise<void> {
     if (qr) {
       botState = 'qr_ready';
       latestQrString = qr;
-      console.log('📲 Escanea este código QR con tu WhatsApp:');
+      logger.info('Código QR generado, escanealo con WhatsApp');
       qrcode.generate(qr, { small: true });
     }
 
@@ -209,27 +212,33 @@ export async function startWhatsAppBot(): Promise<void> {
       currentSock = null;
       const statusCode = (lastDisconnect?.error as Boom)?.output?.statusCode;
       const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
-      console.log(`🔌 Conexión cerrada (código ${statusCode}), reconectando: ${shouldReconnect}`);
+      logger.warn(`Conexión cerrada (código ${statusCode}), reconectando: ${shouldReconnect}`);
       if (shouldReconnect) {
         botState = 'connecting';
-        startWhatsAppBot();
+        startWhatsAppBot().catch((err: unknown) => {
+          logger.error('Error al reconectar bot', { error: String(err) });
+        });
       } else {
-        console.log('🚪 Sesión de WhatsApp cerrada (logout). Limpiando credenciales y generando nuevo QR...');
+        logger.info(
+          'Sesión de WhatsApp cerrada (logout). Limpiando credenciales y generando nuevo QR...',
+        );
         latestQrString = null;
         connectedUserPhone = null;
         try {
           fs.rmSync(AUTH_DIR, { recursive: true, force: true });
-        } catch (rmErr) {
-          console.warn('Advertencia limpiando auth dir:', rmErr);
+        } catch (rmErr: unknown) {
+          logger.warn('Advertencia limpiando auth dir', { error: String(rmErr) });
         }
         botState = 'connecting';
-        startWhatsAppBot();
+        startWhatsAppBot().catch((err: unknown) => {
+          logger.error('Error al reiniciar tras logout', { error: String(err) });
+        });
       }
     } else if (connection === 'open') {
       botState = 'open';
       latestQrString = null;
       connectedUserPhone = sock.user?.id ? sock.user.id.split(':')[0] : null;
-      console.log(`✅ Bot conectado como ${connectedUserPhone}`);
+      logger.info(`Bot conectado exitosamente como ${connectedUserPhone}`);
     }
   });
 
@@ -248,9 +257,7 @@ export async function startWhatsAppBot(): Promise<void> {
     // Deduplicación
     if (isDuplicateMessage(msg.key.id)) return;
 
-    const textMessage =
-      msg.message.conversation ||
-      msg.message.extendedTextMessage?.text;
+    const textMessage = msg.message.conversation || msg.message.extendedTextMessage?.text;
 
     // ── Mensajes enviados desde el propio WhatsApp del bot (Asesor) ──
     if (msg.key.fromMe) {
@@ -259,7 +266,9 @@ export async function startWhatsAppBot(): Promise<void> {
 
       // Palabras que el asesor puede enviar en el chat para cerrar y que el bot retome cordialmente
       if (cmd === '!bot on' || cmd === '!listo' || cmd === '!cerrar' || cmd === '!terminar') {
-        endAdvisorSessionAndResume(from);
+        endAdvisorSessionAndResume(from).catch((err: unknown) => {
+          logger.error('Error cerrando sesión con comando', { error: String(err) });
+        });
         return;
       }
 
@@ -305,11 +314,11 @@ export async function startWhatsAppBot(): Promise<void> {
       return;
     }
 
-    console.log(`📨 Mensaje de ${from}: ${textMessage}`);
+    logger.debug(`Mensaje recibido de ${from}: ${textMessage}`);
 
     // Rate limit
     if (!checkRateLimit(from)) {
-      console.warn(`⚠️  Rate limit excedido para ${from}`);
+      logger.warn(`Rate limit excedido para ${from}`);
       await sock.sendMessage(from, {
         text: '⏳ Has enviado varios mensajes seguidos. Por favor espera unos segundos antes de continuar.',
       });
@@ -319,7 +328,7 @@ export async function startWhatsAppBot(): Promise<void> {
     // Si está en modo asesor, el cliente sigue hablando con el humano
     if (isAwaitingAdvisor(from)) {
       scheduleAdvisorInactivityTimer(from);
-      console.log(`🧑‍💼 Usuario ${from} en conversación con asesor humano.`);
+      logger.debug(`Usuario ${from} en conversación con asesor humano.`);
       return;
     }
 
