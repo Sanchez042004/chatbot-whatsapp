@@ -34,7 +34,7 @@
         <div class="w-8 h-8 rounded-lg bg-[#161B22] border border-white/10 flex items-center justify-center text-[#00F59B]">
           <span class="material-symbols-outlined text-[18px]">admin_panel_settings</span>
         </div>
-        <span class="font-bold text-base text-white">FitBot <span class="text-[#00F59B]">Admin</span></span>
+        <span class="font-bold text-base text-white"><span id="admin-brand-name">Chatbot</span> <span class="text-[#00F59B]">Admin</span></span>
       </div>
       <div id="admin-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#08090C] border border-yellow-500/30 text-xs font-mono text-yellow-400">
         <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse"></span>
@@ -203,11 +203,26 @@
       }
     }
 
+    async function loadBusinessInfo() {
+      try {
+        const res = await fetch('/api/business/config');
+        const data = await res.json();
+        if (data.success && data.business) {
+          const brandNameEl = document.getElementById('admin-brand-name');
+          if (brandNameEl) brandNameEl.textContent = data.business.name;
+          document.title = `${data.business.name} Admin — Panel de Conexión y Asesores`;
+        }
+      } catch (e) {
+        console.error('Error cargando info de negocio:', e);
+      }
+    }
+
     btnRefresh?.addEventListener('click', () => {
       loadQR();
       loadAdvisorChats();
     });
 
+    loadBusinessInfo();
     loadQR();
     loadAdvisorChats();
     setInterval(loadQR, 7000);

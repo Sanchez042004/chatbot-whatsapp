@@ -3,32 +3,23 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>FitBot AI — Asistente Inteligente de WhatsApp para Gimnasios</title>
-  <meta name="description" content="Automatiza la atención de tu gimnasio por WhatsApp 24/7. Responde sobre planes, horarios y clases, captura prospectos y deriva a tu equipo de recepción." />
+  <title>Centro de Ayuda y Atención 24/7 por WhatsApp</title>
+  <meta name="description" content="Asistente virtual de atención al cliente y preguntas frecuentes por WhatsApp y Web disponible 24/7." />
+  
+  <!-- Open Graph / Meta Social -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Centro de Ayuda y Asistente Virtual" />
+  <meta property="og:description" content="Respuestas inmediatas sobre servicios, horarios y atención personalizada." />
+
+  <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com" rel="preconnect"/>
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-  <style>
-    @layer base {
-      html, body { margin: 0; padding: 0; }
-      body { overscroll-behavior: none; }
-    }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #08090C; }
-    ::-webkit-scrollbar-thumb { background: #1C2128; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #00F59B; }
-    .whatsapp-bg {
-      background-color: #0b141a;
-      background-image: 
-        radial-gradient(rgba(255, 255, 255, 0.035) 1.2px, transparent 1.2px),
-        radial-gradient(rgba(0, 245, 155, 0.02) 1.2px, transparent 1.2px);
-      background-size: 24px 24px, 48px 48px;
-      background-position: 0 0, 12px 12px;
-    }
-  </style>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <script id="tailwind-config">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
     tailwind.config = {
       darkMode: "class",
       theme: {
@@ -38,15 +29,7 @@
             "surface-raised": "#0E1117",
             "surface-overlay": "#161B22",
             "surface-hover": "#1C2128",
-            "mint-emerald": "#00F59B",
-            "mint-muted": "#10B981",
-            "cyan-glow": "#38BDF8",
-            "indigo-core": "#6366F1",
             "border-subtle": "rgba(255, 255, 255, 0.08)",
-            "border-hover": "rgba(255, 255, 255, 0.18)",
-            "text-primary": "#F1F5F9",
-            "text-secondary": "#94A3B8",
-            "text-muted": "#64748B"
           },
           fontFamily: {
             sans: ["Inter", "sans-serif"],
@@ -57,555 +40,253 @@
       }
     };
   </script>
-</head>
-<body class="bg-surface-base text-text-primary font-sans antialiased selection:bg-mint-emerald/20 selection:text-mint-emerald min-h-screen flex flex-col">
 
-  <!-- NAVIGATION HEADER -->
-  <header class="fixed top-0 left-0 w-full z-50 bg-surface-base/85 backdrop-blur-xl border-b border-border-subtle">
-    <div class="max-w-7xl mx-auto h-16 px-6 sm:px-8 flex items-center justify-between gap-4">
-      <!-- Logo + Status -->
+  <style>
+    :root {
+      --brand-primary: #00F59B;
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #08090C; }
+    ::-webkit-scrollbar-thumb { background: #1C2128; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--brand-primary); }
+
+    .brand-glow {
+      box-shadow: 0 0 24px -4px var(--brand-primary);
+    }
+    .brand-text {
+      color: var(--brand-primary);
+    }
+    .brand-bg {
+      background-color: var(--brand-primary);
+    }
+    .brand-border {
+      border-color: var(--brand-primary);
+    }
+  </style>
+</head>
+<body class="bg-surface-base text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- HEADER DE NAVEGACIÓN -->
+  <header class="fixed top-0 left-0 w-full z-50 bg-[#08090C]/85 backdrop-blur-xl border-b border-white/10">
+    <div class="max-w-6xl mx-auto h-16 px-5 sm:px-8 flex items-center justify-between gap-4">
+      
+      <!-- Marca y Estado -->
       <div class="flex items-center gap-3">
-        <a class="flex items-center gap-2 group" href="#">
-          <div class="w-8 h-8 rounded-lg bg-surface-raised border border-border-subtle flex items-center justify-center group-hover:border-mint-emerald/50 transition-colors">
-            <svg class="w-4 h-4 text-mint-emerald" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24">
-              <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon>
-              <circle cx="12" cy="12" fill="currentColor" r="3"></circle>
-            </svg>
+        <a class="flex items-center gap-2.5 group" href="#">
+          <div class="w-8 h-8 rounded-lg bg-surface-raised border border-white/10 flex items-center justify-center text-[var(--brand-primary)]">
+            <span class="material-symbols-outlined text-[18px]">smart_toy</span>
           </div>
-          <span class="font-display font-bold text-lg text-text-primary tracking-tight">FitBot<span class="text-mint-emerald">.ai</span></span>
+          <span class="font-display font-bold text-base text-white tracking-tight dynamic-brand-name">Cargando...</span>
         </a>
-        <span class="text-border-subtle font-light hidden sm:inline">/</span>
-        <div id="nav-status-badge" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-raised border border-border-subtle text-xs text-text-secondary font-mono">
-          <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse status-dot"></span>
+        <div id="nav-status-badge" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-surface-raised border border-white/10 text-xs text-slate-400 font-mono">
+          <span class="w-2 h-2 rounded-full bg-slate-500 status-dot"></span>
           <span class="status-text">Verificando...</span>
         </div>
       </div>
 
-      <!-- Navigation Links -->
-      <nav class="hidden md:flex items-center gap-1 text-sm font-medium text-text-secondary">
-        <a class="px-3 py-1.5 rounded-md hover:text-text-primary hover:bg-surface-raised transition-colors" href="#overview">Beneficios</a>
-        <a class="px-3 py-1.5 rounded-md hover:text-text-primary hover:bg-surface-raised transition-colors" href="#solution">Funcionalidades</a>
-        <a class="px-3 py-1.5 rounded-md hover:text-text-primary hover:bg-surface-raised transition-colors" href="#playground">Demostración</a>
-        <a class="px-3 py-1.5 rounded-md hover:text-text-primary hover:bg-surface-raised transition-colors" href="#metrics">Resultados</a>
-      </nav>
-
-      <!-- Header CTAs -->
-      <div class="flex items-center gap-3">
-        <a class="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-mint-emerald hover:bg-mint-muted text-surface-base text-sm font-semibold transition-all shadow-[0_0_16px_rgba(0,245,155,0.2)]" href="https://wa.me/573177509725?text=Hola%20FitBot" target="_blank" rel="noopener noreferrer">
-          <span>Chatear en WhatsApp</span>
-          <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+      <!-- Enlaces y CTA -->
+      <div class="flex items-center gap-4">
+        <nav class="hidden md:flex items-center gap-2 text-xs font-medium text-slate-400">
+          <a class="px-3 py-1.5 rounded-lg hover:text-white hover:bg-surface-raised transition-colors" href="#playground">Probar Chat</a>
+          <a class="px-3 py-1.5 rounded-lg hover:text-white hover:bg-surface-raised transition-colors" href="#offers-section">Servicios</a>
+          <a class="px-3 py-1.5 rounded-lg hover:text-white hover:bg-surface-raised transition-colors" href="#contacto">Contacto</a>
+          <a class="px-3 py-1.5 rounded-lg hover:text-white hover:bg-surface-raised transition-colors font-mono" href="/admin.html">Admin</a>
+        </nav>
+        <a class="dynamic-wa-link flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--brand-primary)] text-slate-950 text-xs font-bold transition-all hover:opacity-90 shadow-sm" href="#" target="_blank" rel="noopener noreferrer">
+          <span class="material-symbols-outlined text-[16px]">chat</span>
+          <span>WhatsApp</span>
         </a>
       </div>
     </div>
   </header>
 
-  <!-- MAIN WRAPPER -->
-  <main class="w-full flex-1 pt-16" id="overview">
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="w-full flex-1 pt-16 flex flex-col items-center">
+    
     <!-- HERO SECTION -->
-    <section class="relative w-full overflow-hidden pt-14 pb-20 md:py-24 border-b border-border-subtle">
-      <!-- Ambient Lighting -->
-      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[350px] bg-mint-emerald/10 blur-[140px] rounded-full pointer-events-none"></div>
-      
-      <div class="relative max-w-7xl mx-auto px-6 sm:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+    <section class="w-full max-w-5xl px-6 pt-16 pb-12 flex flex-col items-center text-center gap-5">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-surface-raised border border-white/10 text-xs font-medium text-[var(--brand-primary)]">
+        <span class="w-2 h-2 rounded-full bg-[var(--brand-primary)] animate-pulse"></span>
+        <span id="hero-industry">Atención Inteligente 24/7</span>
+      </div>
+
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight max-w-3xl font-display">
+        Respuestas instantáneas en <span class="dynamic-brand-name brand-text">nuestro asistente</span>
+      </h1>
+
+      <p id="hero-tagline" class="text-sm sm:text-base text-slate-400 max-w-2xl leading-relaxed">
+        Consulta horarios, servicios, ubicación y precios en tiempo real directamente desde WhatsApp o desde este portal web.
+      </p>
+
+      <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+        <a class="dynamic-wa-link flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--brand-primary)] text-slate-950 text-xs font-bold transition-all hover:opacity-90" href="#" target="_blank" rel="noopener noreferrer">
+          <span class="material-symbols-outlined text-[16px]">chat</span>
+          <span>Escribir por WhatsApp</span>
+        </a>
+        <a class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface-raised hover:bg-surface-hover border border-white/10 text-xs font-medium text-white transition-colors" href="#playground">
+          <span class="material-symbols-outlined text-[16px]">smart_toy</span>
+          <span>Probar Asistente Web</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- SECCIÓN INTERACTIVA: CHAT PLAYGROUND / DEMO -->
+    <section id="playground" class="w-full max-w-5xl px-6 py-10">
+      <div class="p-6 sm:p-8 rounded-3xl bg-surface-raised border border-white/10 shadow-2xl flex flex-col gap-6">
+        
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-white/5">
+          <div class="space-y-1">
+            <h2 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+              <span class="material-symbols-outlined text-[var(--brand-primary)] text-[20px]">forum</span>
+              <span>Asistente Virtual en Vivo</span>
+            </h2>
+            <p class="text-xs text-slate-400">Prueba cómo responde el asistente a preguntas frecuentes o escribe una consulta libre.</p>
+          </div>
+          <span class="text-xs font-mono px-3 py-1 rounded-full bg-surface-base border border-white/10 text-slate-400">
+            Mismo motor que WhatsApp
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
-          <!-- Hero Copy -->
-          <div class="lg:col-span-7 flex flex-col items-start gap-6">
-            <!-- Pill Badge -->
-            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-surface-raised border border-border-subtle text-xs font-medium text-mint-emerald">
-              <span class="w-2 h-2 rounded-full bg-mint-emerald animate-pulse"></span>
-              <span>Atención 24/7 • WhatsApp para Gimnasios</span>
-            </div>
-
-            <!-- Headline -->
-            <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text-primary tracking-tight leading-[1.1]">
-              El Asistente de WhatsApp que atiende a tus socios en <span class="text-transparent bg-clip-text bg-gradient-to-r from-mint-emerald via-[#6ee7b7] to-cyan-glow">segundos</span>.
-            </h1>
-
-            <!-- Subtitle -->
-            <p class="text-lg sm:text-xl text-text-secondary font-normal leading-relaxed max-w-xl">
-              Responde dudas sobre precios, horarios, clases y normas al instante. Convierte prospectos en afiliados y deriva a recepción cuando se necesite atención humana.
-            </p>
-
-            <!-- Action CTAs -->
-            <div class="flex flex-wrap items-center gap-3 pt-2 w-full sm:w-auto">
-              <a class="flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-mint-emerald hover:bg-mint-muted text-surface-base font-semibold text-sm transition-all shadow-[0_0_24px_rgba(0,245,155,0.25)] hover:shadow-[0_0_32px_rgba(0,245,155,0.4)]" href="https://wa.me/573177509725?text=Hola%20FitBot" target="_blank" rel="noopener noreferrer">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 0C5.396 0 .029 5.367.029 12.002c0 2.119.553 4.186 1.604 6.007L0 24l6.163-1.617c1.761.96 3.746 1.467 5.868 1.467 6.634 0 12.002-5.367 12.002-12.002C24.033 5.367 18.665 0 12.031 0zm.019 21.972c-1.802 0-3.567-.484-5.111-1.399l-.367-.217-3.799.996 1.015-3.7-.239-.379c-1.006-1.6-1.536-3.468-1.536-5.385 0-5.503 4.478-9.98 9.986-9.98 2.666 0 5.172 1.038 7.058 2.925 1.885 1.886 2.923 4.393 2.923 7.06-.002 5.503-4.481 9.98-9.93 9.98zm5.465-7.481c-.299-.149-1.77-.874-2.044-.974-.275-.099-.475-.149-.675.15-.2.299-.774.974-.949 1.173-.175.2-.349.224-.648.075-.3-.149-1.265-.466-2.409-1.486-.89-.794-1.49-1.775-1.665-2.074-.175-.3-.019-.462.13-.611.135-.134.3-.349.45-.523.149-.174.199-.299.299-.499.1-.199.05-.374-.025-.523-.075-.149-.675-1.625-.924-2.224-.243-.585-.49-.505-.675-.515-.175-.008-.374-.01-.573-.01-.2 0-.524.075-.798.374-.274.299-1.049 1.024-1.049 2.499 0 1.474 1.074 2.898 1.224 3.098.15.199 2.114 3.228 5.122 4.528.716.309 1.275.494 1.71.633.72.229 1.375.197 1.893.12.578-.087 1.77-.723 2.02-1.422.249-.699.249-1.298.174-1.422-.074-.124-.274-.199-.573-.349z"/></svg>
-                <span>Chatear en WhatsApp</span>
-              </a>
-
-              <a class="flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-surface-raised hover:bg-surface-hover text-text-primary border border-border-subtle hover:border-border-hover text-sm transition-all" href="#playground">
-                <span>Ver Demostración</span>
-                <span class="material-symbols-outlined text-[16px]">arrow_downward</span>
-              </a>
-            </div>
-
-            <!-- Value Highlights Row -->
-            <div class="pt-2 flex flex-wrap items-center gap-6 text-xs text-text-secondary font-medium">
-              <div class="flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-[18px] text-mint-emerald">check_circle</span>
-                <span>Respuestas Inmediatas</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-[18px] text-mint-emerald">check_circle</span>
-                <span>Cero Mensajes sin Responder</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-[18px] text-mint-emerald">check_circle</span>
-                <span>Derivación Fluida a Recepción</span>
+          <!-- Columna izquierda: Preguntas Rápidas Sugeridas -->
+          <div class="lg:col-span-5 flex flex-col gap-2.5">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Preguntas Rápidas</span>
+            <div id="faq-quick-buttons" class="flex flex-col gap-2">
+              <div class="p-4 rounded-xl bg-surface-base border border-white/5 text-xs text-slate-500 font-mono text-center">
+                Cargando preguntas frecuentes...
               </div>
             </div>
           </div>
 
-          <!-- Hero Phone Mockup (Real WhatsApp Chat) -->
-          <div class="lg:col-span-5 flex justify-center items-center">
-            <div class="relative w-full max-w-[340px]">
-              <!-- Ambient Subtle Aura -->
-              <div class="absolute -inset-4 bg-gradient-to-tr from-mint-emerald/15 to-cyan-glow/10 rounded-[48px] blur-2xl -z-10"></div>
-              
-              <!-- Phone Shell -->
-              <div class="rounded-[40px] bg-[#0c0e12] p-3 shadow-2xl border border-white/10">
-                <!-- Notch -->
-                <div class="relative mx-auto w-24 h-4 bg-surface-base rounded-full mb-2 flex items-center justify-center">
-                  <div class="w-2.5 h-2.5 rounded-full bg-[#16181f] mr-2"></div>
-                  <div class="w-8 h-1 bg-[#1e222b] rounded-full"></div>
-                </div>
-                
-                <!-- Screen Viewport -->
-                <div class="rounded-[30px] bg-[#080a0e] overflow-hidden flex flex-col h-[520px] border border-white/5">
-                  <!-- WhatsApp Chat Header -->
-                  <div class="bg-surface-raised px-4 py-3 border-b border-border-subtle flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                      <div class="relative w-8 h-8 rounded-full bg-mint-emerald/15 border border-mint-emerald/30 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-mint-emerald text-[18px]">fitness_center</span>
-                        <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-mint-emerald border-2 border-surface-raised"></span>
-                      </div>
-                      <div class="flex flex-col">
-                        <span class="text-sm font-semibold text-text-primary">FitBot Gym</span>
-                        <span class="text-[11px] text-mint-emerald">En línea • Cra 8 # 28-18</span>
-                      </div>
-                    </div>
-                    <span class="material-symbols-outlined text-text-secondary text-[20px]">more_vert</span>
-                  </div>
-
-                  <!-- Chat Message Stream -->
-                  <div class="flex-1 p-3.5 space-y-3.5 overflow-y-auto">
-                    <!-- Day stamp -->
-                    <div class="flex justify-center">
-                      <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-surface-raised text-text-muted">HOY</span>
-                    </div>
-
-                    <!-- User Question -->
-                    <div class="flex flex-col items-end">
-                      <div class="max-w-[85%] rounded-2xl rounded-tr-sm bg-[#064e3b] text-[#ecfdf5] px-3.5 py-2.5 text-sm shadow-sm">
-                        <p class="leading-relaxed">¡Hola! ¿Qué planes de membresía tienen y puedo pedir un pase de prueba?</p>
-                        <div class="flex items-center justify-end gap-1 mt-1 text-[10px] text-mint-emerald/70">
-                          <span>10:42 AM</span>
-                          <span class="material-symbols-outlined text-[13px] text-cyan-glow">done_all</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Bot Response -->
-                    <div class="flex flex-col items-start space-y-1.5">
-                      <div class="max-w-[92%] rounded-2xl rounded-tl-sm bg-surface-raised text-text-primary p-3.5 text-xs border border-border-subtle shadow-sm space-y-2">
-                        <p class="leading-relaxed">
-                          ¡Hola! Bienvenido a FitBot Gym. Contamos con estos planes:
-                        </p>
-                        <div class="rounded-lg bg-surface-base/80 p-2 text-xs space-y-1 border border-border-subtle font-mono">
-                          <div class="flex justify-between">
-                            <span class="text-text-primary">🏋️ Plan Básico</span>
-                            <span class="text-mint-emerald font-semibold">$80.000/mes</span>
-                          </div>
-                          <div class="flex justify-between">
-                            <span class="text-text-primary">⚡ Plan Premium</span>
-                            <span class="text-cyan-glow font-semibold">$120.000/mes</span>
-                          </div>
-                          <div class="flex justify-between">
-                            <span class="text-text-primary">🌟 Plan Anual</span>
-                            <span class="text-indigo-core font-semibold">$1.000.000 (2 meses gratis)</span>
-                          </div>
-                        </div>
-                        <p class="text-[11px] text-text-secondary">
-                          🎁 ¡Sí! Puedes solicitar un <strong class="text-mint-emerald font-semibold">Free Pass de 1 día gratis</strong> en recepción con tu documento.
-                        </p>
-                      </div>
-
-                      <!-- Native WhatsApp Quick Actions -->
-                      <div class="w-full max-w-[92%] space-y-1 pt-1">
-                        <a href="https://wa.me/573177509725?text=Quiero%20solicitar%20un%20pase%20de%20prueba%20gratis" target="_blank" class="w-full py-2 px-3 rounded-lg bg-surface-overlay hover:bg-surface-hover text-mint-emerald border border-border-subtle text-left text-xs font-medium flex items-center justify-between transition-colors">
-                          <span>Solicitar Free Pass (1 Día)</span>
-                          <span class="material-symbols-outlined text-[14px]">confirmation_number</span>
-                        </a>
-                        <a href="https://wa.me/573177509725?text=Quiero%20hablar%20con%20un%20asesor%20humano" target="_blank" class="w-full py-2 px-3 rounded-lg bg-surface-overlay hover:bg-surface-hover text-text-primary border border-border-subtle text-left text-xs font-medium flex items-center justify-between transition-colors">
-                          <span>Hablar con un Asesor</span>
-                          <span class="material-symbols-outlined text-[14px]">support_agent</span>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Mock Input Bar -->
-                  <div class="p-2.5 bg-surface-raised border-t border-border-subtle flex items-center gap-2">
-                    <div class="flex-1 bg-surface-base border border-border-subtle rounded-full px-3.5 py-1.5 text-xs text-text-muted flex items-center justify-between">
-                      <span>Escribe un mensaje...</span>
-                      <span class="material-symbols-outlined text-[16px]">sentiment_satisfied</span>
-                    </div>
-                    <div class="w-7 h-7 rounded-full bg-mint-emerald text-surface-base flex items-center justify-center">
-                      <span class="material-symbols-outlined text-[15px]">send</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- METRICS & IMPACT ROW -->
-    <section class="w-full py-14 border-b border-border-subtle bg-surface-raised/40" id="metrics">
-      <div class="max-w-7xl mx-auto px-6 sm:px-8">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
-          <div class="flex flex-col gap-1">
-            <span class="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-mint-emerald tracking-tight">&lt; 1.5s</span>
-            <span class="text-sm font-semibold text-text-primary">Respuesta Instantánea</span>
-            <span class="text-xs text-text-secondary">Sin colas ni llamadas en espera</span>
-          </div>
-          <div class="flex flex-col gap-1">
-            <span class="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text-primary tracking-tight">24/7</span>
-            <span class="text-sm font-semibold text-text-primary">Atención Ininterrumpida</span>
-            <span class="text-xs text-text-secondary">Captura prospectos de noche y fines de semana</span>
-          </div>
-          <div class="flex flex-col gap-1">
-            <span class="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-cyan-glow tracking-tight">85%</span>
-            <span class="text-sm font-semibold text-text-primary">Consultas Resueltas</span>
-            <span class="text-xs text-text-secondary">Precios, clases, horarios y normas</span>
-          </div>
-          <div class="flex flex-col gap-1">
-            <span class="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text-primary tracking-tight">0</span>
-            <span class="text-sm font-semibold text-text-primary">Prospectos Perdidos</span>
-            <span class="text-xs text-text-secondary">Atención inmediata a cada mensaje</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CORE PRODUCT HIGHLIGHTS (Clean Minimalist Cards) -->
-    <section class="w-full py-20 border-b border-border-subtle" id="solution">
-      <div class="max-w-7xl mx-auto px-6 sm:px-8">
-        <!-- Section Title -->
-        <div class="flex flex-col gap-2 max-w-2xl mb-12">
-          <div class="text-xs font-mono uppercase tracking-wider text-mint-emerald">BENEFICIOS PRINCIPALES</div>
-          <h2 class="font-display text-3xl sm:text-4xl font-bold text-text-primary tracking-tight">
-            Diseñado para la atención diaria de tu gimnasio
-          </h2>
-          <p class="text-base text-text-secondary">
-            Elimina la sobrecarga en recepción y brinda a tus socios respuestas claras en el canal que más utilizan todos los días.
-          </p>
-        </div>
-
-        <!-- 3 Feature Cards Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Card 1 -->
-          <div class="rounded-2xl bg-surface-raised border border-border-subtle hover:border-border-hover p-8 flex flex-col justify-between transition-all group">
-            <div class="space-y-4">
-              <div class="w-12 h-12 rounded-xl bg-mint-emerald/10 border border-mint-emerald/20 flex items-center justify-center text-mint-emerald group-hover:scale-105 transition-transform">
-                <span class="material-symbols-outlined text-[24px]">payments</span>
-              </div>
-              <h3 class="font-display text-xl font-bold text-text-primary">Información de Planes y Ventas</h3>
-              <p class="text-sm text-text-secondary leading-relaxed">
-                Presenta tarifas mensuales, beneficios de cada membresía, métodos de pago aceptados (Nequi, Daviplata, PSE, tarjetas) y promociones de forma clara y sin demoras.
-              </p>
-            </div>
-            <div class="pt-6 border-t border-border-subtle/60 flex items-center gap-2 text-xs font-medium text-mint-emerald">
-              <span>Más conversiones de afiliados</span>
-              <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-            </div>
-          </div>
-
-          <!-- Card 2 -->
-          <div class="rounded-2xl bg-surface-raised border border-border-subtle hover:border-border-hover p-8 flex flex-col justify-between transition-all group">
-            <div class="space-y-4">
-              <div class="w-12 h-12 rounded-xl bg-cyan-glow/10 border border-cyan-glow/20 flex items-center justify-center text-cyan-glow group-hover:scale-105 transition-transform">
-                <span class="material-symbols-outlined text-[24px]">support_agent</span>
-              </div>
-              <h3 class="font-display text-xl font-bold text-text-primary">Derivación Fluida a Recepción</h3>
-              <p class="text-sm text-text-secondary leading-relaxed">
-                Cuando un afiliado solicita hablar con un asesor o requiere atención especializada, el bot se pausa automáticamente para que tu equipo tome el control sin perder el contexto.
-              </p>
-            </div>
-            <div class="pt-6 border-t border-border-subtle/60 flex items-center gap-2 text-xs font-medium text-cyan-glow">
-              <span>Atención humana cuando importa</span>
-              <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-            </div>
-          </div>
-
-          <!-- Card 3 -->
-          <div class="rounded-2xl bg-surface-raised border border-border-subtle hover:border-border-hover p-8 flex flex-col justify-between transition-all group">
-            <div class="space-y-4">
-              <div class="w-12 h-12 rounded-xl bg-indigo-core/10 border border-indigo-core/20 flex items-center justify-center text-indigo-core group-hover:scale-105 transition-transform">
-                <span class="material-symbols-outlined text-[24px]">calendar_month</span>
-              </div>
-              <h3 class="font-display text-xl font-bold text-text-primary">Horarios, Clases y Normas</h3>
-              <p class="text-sm text-text-secondary leading-relaxed">
-                Resuelve al instante preguntas repetitivas: horarios en festivos, clases grupales de spinning o yoga, ubicación de la sede, parqueadero y vestieres.
-              </p>
-            </div>
-            <div class="pt-6 border-t border-border-subtle/60 flex items-center gap-2 text-xs font-medium text-indigo-core">
-              <span>Recepción enfocada en el cliente</span>
-              <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- INTERACTIVE CONVERSATIONAL PLAYGROUND -->
-    <section class="w-full py-20" id="playground">
-      <div class="max-w-7xl mx-auto px-6 sm:px-8">
-        <div class="flex flex-col gap-2 max-w-2xl mb-10">
-          <div class="text-xs font-mono uppercase tracking-wider text-mint-emerald">DEMOSTRACIÓN INTERACTIVA</div>
-          <h2 class="font-display text-3xl sm:text-4xl font-bold text-text-primary tracking-tight">
-            Prueba cómo responde FitBot
-          </h2>
-          <p class="text-base text-text-secondary">
-            Selecciona una consulta común de un socio para ver la estructura, claridad y botones de acción que genera el chatbot.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <!-- Query Selector Column -->
-          <div class="lg:col-span-5 flex flex-col gap-3">
-            <span class="text-xs font-mono text-text-muted uppercase">Consultas frecuentes de socios:</span>
-
-            <!-- Option 1: Planes -->
-            <button class="playground-btn active text-left p-4 rounded-xl bg-surface-raised border border-mint-emerald/40 hover:border-mint-emerald text-text-primary transition-all flex flex-col gap-1.5"
-                    data-tag="Planes y Tarifas"
-                    data-query="¿Cuánto cuesta la mensualidad y qué incluye cada plan?"
-                    data-answer="Nuestros planes actuales son:
-• **Plan Básico ($80.000/mes)**: Acceso total a sala de musculación, pesas libres y zona de cardio.
-• **Plan Premium ($120.000/mes)**: Acceso ilimitado a todas las clases grupales (Spinning, Yoga, Zumba, CrossFit) y zona húmeda con sauna.
-• **Plan Anual ($1.000.000)**: Incluye 2 meses gratis y es transferible.
-
-Aceptamos efectivo, tarjetas débito/crédito, PSE, Nequi y Daviplata."
-                    data-cta1="💳 Ver Métodos de Pago"
-                    data-cta2="🎁 Solicitar Free Pass (1 Día)"
-                    data-highlight="Desglose inmediato de precios con opciones de acción rápida para facilitar la decisión del cliente.">
-              <div class="flex items-center justify-between text-xs font-mono">
-                <span class="text-mint-emerald font-semibold">01. Membresías y Precios</span>
-                <span class="text-text-muted text-[11px]">Clic para ver</span>
-              </div>
-              <span class="font-medium text-sm text-text-primary">"¿Cuánto cuesta la mensualidad y qué incluye cada plan?"</span>
-            </button>
-
-            <!-- Option 2: Horarios y Parqueadero -->
-            <button class="playground-btn text-left p-4 rounded-xl bg-surface-raised border border-border-subtle hover:border-border-hover text-text-secondary hover:text-text-primary transition-all flex flex-col gap-1.5"
-                    data-tag="Ubicación y Horarios"
-                    data-query="¿Dónde están ubicados, qué horarios manejan y tienen parqueadero?"
-                    data-answer="Estamos ubicados en la **Cra 8 # 28-18**. Contamos con **parqueadero gratuito para afiliados por hasta 3 horas**.
-
-Nuestros horarios de atención son:
-• **Lunes a Viernes**: 5:00 am a 10:00 pm
-• **Sábados**: 6:00 am a 6:00 pm
-• **Domingos**: 7:00 am a 2:00 pm
-• **Festivos**: 7:00 am a 1:00 pm (Solo cerramos 25 de dic y 1 de ene)."
-                    data-cta1="📍 Abrir Ubicación en Maps"
-                    data-cta2="🕒 Ver Horas Tranquilas"
-                    data-highlight="Aclara la logística de llegada, estacionamiento y horarios especiales sin requerir llamadas a recepción.">
-              <div class="flex items-center justify-between text-xs font-mono">
-                <span class="text-cyan-glow font-semibold">02. Horarios y Sede</span>
-                <span class="text-text-muted text-[11px]">Clic para ver</span>
-              </div>
-              <span class="font-medium text-sm text-text-primary">"¿Dónde están ubicados, qué horarios manejan y tienen parqueadero?"</span>
-            </button>
-
-            <!-- Option 3: Clases Grupales -->
-            <button class="playground-btn text-left p-4 rounded-xl bg-surface-raised border border-border-subtle hover:border-border-hover text-text-secondary hover:text-text-primary transition-all flex flex-col gap-1.5"
-                    data-tag="Clases Grupales"
-                    data-query="¿Qué clases grupales tienen y en qué horarios se dictan?"
-                    data-answer="Nuestras clases grupales son multinivel (aptas para principiantes y avanzados):
-• **Spinning**: Lun-Vie (6:00 am, 7:00 am, 6:00 pm, 7:00 pm) y Sáb (8:00 am, 9:00 am).
-• **Yoga y Pilates**: Mar y Jue (7:00 am, 5:00 pm) y Sáb (10:00 am).
-• **Zumba**: Lun, Mié y Vie (8:00 am, 6:30 pm).
-• **CrossFit / Funcional**: Lun-Vie (6:00 am, 8:00 am, 5:00 pm, 7:00 pm) y Sáb (9:00 am).
-
-Puedes reservar tu cupo hasta con 2 horas de anticipación."
-                    data-cta1="🚴 Reservar Cupo en Clase"
-                    data-cta2="🎟️ Pase Clase Suelta ($15.000)"
-                    data-highlight="Organización clara por disciplina deportiva y horarios para motivar la asistencia a clases.">
-              <div class="flex items-center justify-between text-xs font-mono">
-                <span class="text-indigo-core font-semibold">03. Clases y Horarios</span>
-                <span class="text-text-muted text-[11px]">Clic para ver</span>
-              </div>
-              <span class="font-medium text-sm text-text-primary">"¿Qué clases grupales tienen y en qué horarios se dictan?"</span>
-            </button>
-
-            <!-- Option 4: Handoff -->
-            <button class="playground-btn text-left p-4 rounded-xl bg-surface-raised border border-border-subtle hover:border-border-hover text-text-secondary hover:text-text-primary transition-all flex flex-col gap-1.5"
-                    data-tag="Atención Personalizada"
-                    data-query="Quiero hablar con un asesor humano de recepción."
-                    data-answer="¡Comprendido! He pausado mis respuestas automáticas y transferido esta conversación a nuestro **equipo de recepción y asesores comerciales**.
-
-Un asesor humano te responderá directamente por aquí en breve. Si el asesor desea reactivarme al terminar, solo debe enviar el comando `!bot on`."
-                    data-cta1="🧑‍💼 Asesor Humano Asignado"
-                    data-cta2="💬 Notificación Enviada"
-                    data-highlight="Transición suave al equipo de recepción sin fricciones ni pérdida del hilo de la conversación.">
-              <div class="flex items-center justify-between text-xs font-mono">
-                <span class="text-[#f59e0b] font-semibold">04. Derivación a Recepción</span>
-                <span class="text-text-muted text-[11px]">Clic para ver</span>
-              </div>
-              <span class="font-medium text-sm text-text-primary">"Quiero hablar con un asesor humano de recepción."</span>
-            </button>
-          </div>
-
-          <!-- Preview Column (Authentic WhatsApp Web Interface) -->
-          <div class="lg:col-span-7 flex flex-col gap-3">
-            <div class="flex items-center justify-between text-xs font-mono text-text-muted">
-              <span class="uppercase">VISTA PREVIA DE WHATSAPP EN VIVO:</span>
-              <span id="preview-tag" class="text-mint-emerald font-semibold">01. Planes y Tarifas</span>
-            </div>
+          <!-- Columna derecha: Simulador de Chat Interactivo -->
+          <div class="lg:col-span-7 flex flex-col rounded-2xl bg-[#0B141A] border border-white/10 overflow-hidden shadow-inner">
             
-            <!-- WhatsApp Chat Window Shell -->
-            <div class="rounded-2xl border border-border-subtle overflow-hidden shadow-2xl flex flex-col bg-[#0b141a]">
-              <!-- WhatsApp Web Header -->
-              <div class="bg-[#202c33] px-4 py-3 border-b border-[#2a3942] flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <div class="relative w-9 h-9 rounded-full bg-mint-emerald/20 border border-mint-emerald/40 flex items-center justify-center text-mint-emerald">
-                    <span class="material-symbols-outlined text-[20px]">fitness_center</span>
-                    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#00F59B] border-2 border-[#202c33]"></span>
-                  </div>
-                  <div class="flex flex-col">
-                    <div class="flex items-center gap-1.5">
-                      <span class="text-sm font-semibold text-[#e9edef]">FitBot Gym</span>
-                      <span class="material-symbols-outlined text-[14px] text-cyan-glow" title="Cuenta Comercial Oficial">verified</span>
-                    </div>
-                    <span class="text-[11px] text-mint-emerald font-normal">en línea • Cra 8 # 28-18</span>
-                  </div>
+            <!-- Barra superior del chat simulado -->
+            <div class="px-4 py-3 bg-[#1F2C34] flex items-center justify-between border-b border-white/5">
+              <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-full bg-[var(--brand-primary)]/20 border border-[var(--brand-primary)]/40 flex items-center justify-center text-[var(--brand-primary)]">
+                  <span class="material-symbols-outlined text-[15px]">smart_toy</span>
                 </div>
-
-                <!-- Right Header Actions -->
-                <div class="flex items-center gap-3 text-[#aebac1]">
-                  <span class="material-symbols-outlined text-[20px] cursor-pointer hover:text-white transition-colors">videocam</span>
-                  <span class="material-symbols-outlined text-[19px] cursor-pointer hover:text-white transition-colors">call</span>
-                  <div class="w-px h-4 bg-[#374248]"></div>
-                  <span class="material-symbols-outlined text-[20px] cursor-pointer hover:text-white transition-colors">search</span>
-                  <span class="material-symbols-outlined text-[20px] cursor-pointer hover:text-white transition-colors">more_vert</span>
-                </div>
-              </div>
-
-              <!-- WhatsApp Messages Stream with Authentic Wallpaper Background -->
-              <div class="whatsapp-bg p-4 sm:p-5 flex flex-col gap-3 min-h-[380px] max-h-[460px] overflow-y-auto">
-                <!-- Day Timestamp -->
-                <div class="flex justify-center mb-1">
-                  <span class="text-[10px] uppercase font-mono px-3 py-1 rounded-lg bg-[#182229] text-[#8696a0] border border-[#222e35] shadow-sm">HOY</span>
-                </div>
-
-                <!-- Customer Sent Message Bubble (Green) -->
-                <div class="flex flex-col items-end">
-                  <div class="max-w-[88%] sm:max-w-[80%] rounded-2xl rounded-tr-xs bg-[#005c4b] text-[#e9edef] p-3 text-sm leading-relaxed shadow-md border border-[#02735e]/30">
-                    <span id="preview-query" class="text-[13.5px]">¿Cuánto cuesta la mensualidad y qué incluye cada plan?</span>
-                    <div class="flex items-center justify-end gap-1 mt-1 text-[10px] text-[#8696a0]">
-                      <span>10:42 AM</span>
-                      <span class="material-symbols-outlined text-[14px] text-[#53bdeb]">done_all</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- FitBot Received Message Bubble (Dark Slate) -->
-                <div class="flex flex-col items-start gap-1.5 pt-1">
-                  <div class="max-w-[94%] sm:max-w-[88%] rounded-2xl rounded-tl-xs bg-[#202c33] text-[#e9edef] p-3.5 text-sm leading-relaxed shadow-md border border-[#2a3942]/60 whitespace-pre-line">
-                    <p id="preview-answer" class="text-[13px] leading-relaxed">Nuestros planes actuales son:
-• **Plan Básico ($80.000/mes)**: Acceso total a sala de musculación, pesas libres y zona de cardio.
-• **Plan Premium ($120.000/mes)**: Acceso ilimitado a todas las clases grupales (Spinning, Yoga, Zumba, CrossFit) y zona húmeda con sauna.
-• **Plan Anual ($1.000.000)**: Incluye 2 meses gratis y es transferible.
-
-Aceptamos efectivo, tarjetas débito/crédito, PSE, Nequi y Daviplata.</p>
-                    <div class="flex items-center justify-end gap-1 mt-1.5 text-[10px] text-[#8696a0]">
-                      <span>10:42 AM</span>
-                    </div>
-                  </div>
-
-                  <!-- WhatsApp Native Action Buttons -->
-                  <div class="w-full max-w-[94%] sm:max-w-[88%] grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-0.5">
-                    <div class="py-2 px-3 rounded-lg bg-[#202c33] hover:bg-[#2a3942] border border-[#2a3942] text-xs text-mint-emerald font-medium flex items-center justify-between transition-colors cursor-pointer shadow-sm" id="preview-cta1">
-                      <span>💳 Ver Métodos de Pago</span>
-                      <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-                    </div>
-                    <div class="py-2 px-3 rounded-lg bg-[#202c33] hover:bg-[#2a3942] border border-[#2a3942] text-xs text-[#e9edef] font-medium flex items-center justify-between transition-colors cursor-pointer shadow-sm" id="preview-cta2">
-                      <span>🎁 Solicitar Free Pass (1 Día)</span>
-                      <span class="material-symbols-outlined text-[14px]">visibility</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- WhatsApp Web Bottom Input Bar -->
-              <div class="bg-[#202c33] px-3 py-2.5 border-t border-[#2a3942] flex items-center gap-2">
-                <span class="material-symbols-outlined text-[22px] text-[#8696a0] hover:text-[#e9edef] cursor-pointer transition-colors">sentiment_satisfied</span>
-                <span class="material-symbols-outlined text-[22px] text-[#8696a0] hover:text-[#e9edef] cursor-pointer transition-colors">attach_file</span>
-                <div class="flex-1 bg-[#2a3942] rounded-lg px-3.5 py-1.5 text-xs text-[#8696a0] flex items-center justify-between">
-                  <span>Escribe un mensaje aquí...</span>
-                </div>
-                <div class="w-8 h-8 rounded-full bg-[#00a884] hover:bg-[#029070] text-[#111b21] flex items-center justify-center cursor-pointer transition-colors">
-                  <span class="material-symbols-outlined text-[17px] font-bold">send</span>
+                <div class="flex flex-col">
+                  <span class="text-xs font-semibold text-white dynamic-brand-name">Asistente</span>
+                  <span class="text-[10px] text-emerald-400 font-mono">En línea</span>
                 </div>
               </div>
             </div>
 
-            <!-- Impact Callout Note -->
-            <div class="p-3 rounded-xl bg-surface-raised border border-mint-emerald/20 text-xs flex items-start gap-2.5">
-              <span class="material-symbols-outlined text-mint-emerald text-[18px] shrink-0 mt-0.5">verified</span>
-              <div class="space-y-0.5">
-                <span class="font-semibold text-text-primary block">Impacto en la Atención:</span>
-                <span class="text-text-secondary" id="preview-highlight">
-                  Desglose inmediato de precios con opciones de acción rápida para facilitar la decisión del cliente.
-                </span>
+            <!-- Área de mensajes -->
+            <div class="p-4 flex flex-col gap-3 min-h-[220px] max-h-[320px] overflow-y-auto">
+              <!-- Mensaje de Usuario -->
+              <div class="self-end max-w-[85%] rounded-2xl rounded-tr-xs bg-[#005C4B] text-white p-3 text-xs leading-relaxed shadow-sm">
+                <span id="chat-preview-query">Hola, ¿cuáles son los horarios de atención?</span>
+              </div>
+
+              <!-- Respuesta del Bot -->
+              <div class="self-start max-w-[90%] rounded-2xl rounded-tl-xs bg-[#202C33] text-slate-100 p-3.5 text-xs leading-relaxed shadow-sm border border-white/5">
+                <div id="chat-preview-answer">
+                  Cargando información del asistente...
+                </div>
               </div>
             </div>
+
+            <!-- Input para escribir cualquier mensaje -->
+            <div class="p-3 bg-[#1F2C34] border-t border-white/5 flex items-center gap-2">
+              <input
+                id="web-chat-input"
+                type="text"
+                placeholder="Escribe tu pregunta y presiona Enter..."
+                class="flex-1 px-3 py-2 rounded-xl bg-[#2A3942] border border-transparent focus:border-[var(--brand-primary)] text-xs text-white placeholder-slate-400 focus:outline-none"
+              />
+              <button
+                id="btn-send-web-chat"
+                class="px-3.5 py-2 rounded-xl bg-[var(--brand-primary)] text-slate-950 font-bold text-xs hover:opacity-90 transition-opacity flex items-center justify-center"
+                title="Enviar mensaje"
+              >
+                <span class="material-symbols-outlined text-[16px]">send</span>
+              </button>
+            </div>
+
           </div>
+
         </div>
+
       </div>
     </section>
+
+    <!-- SECCIÓN DE OFERTAS / SERVICIOS / PLANES (DINÁMICA) -->
+    <section id="offers-section" class="w-full max-w-5xl px-6 py-12 hidden">
+      <div class="space-y-2 mb-8 text-center sm:text-left">
+        <h2 class="text-2xl font-bold text-white tracking-tight font-display">Planes y Servicios</h2>
+        <p class="text-xs text-slate-400">Opciones disponibles para contratar o reservar en <span class="dynamic-brand-name">nuestro negocio</span>.</p>
+      </div>
+      <div id="offers-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Renderizado dinámicamente por app.js -->
+      </div>
+    </section>
+
+    <!-- SECCIÓN DE HORARIOS Y CONTACTO -->
+    <section id="contacto" class="w-full max-w-5xl px-6 py-12 border-t border-white/5">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        
+        <!-- Horarios de atención -->
+        <div class="p-6 rounded-2xl bg-surface-raised border border-white/10 space-y-4">
+          <h3 class="text-sm font-bold text-white tracking-tight flex items-center gap-2">
+            <span class="material-symbols-outlined text-[var(--brand-primary)] text-[18px]">schedule</span>
+            <span>Horarios de Atención</span>
+          </h3>
+          <div id="schedule-container" class="flex flex-col">
+            <span class="text-xs text-slate-500 font-mono py-2">Consultando horarios...</span>
+          </div>
+        </div>
+
+        <!-- Información de contacto y dirección -->
+        <div class="p-6 rounded-2xl bg-surface-raised border border-white/10 space-y-4">
+          <h3 class="text-sm font-bold text-white tracking-tight flex items-center gap-2">
+            <span class="material-symbols-outlined text-[var(--brand-primary)] text-[18px]">location_on</span>
+            <span>Ubicación y Contacto Directo</span>
+          </h3>
+          <div class="flex flex-col gap-2.5 text-xs text-slate-300">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[15px] text-slate-500">pin_drop</span>
+              <span id="contact-address">Dirección de la sede principal</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[15px] text-slate-500">call</span>
+              <span id="contact-phone" class="font-mono">Teléfono de contacto</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[15px] text-slate-500">mail</span>
+              <span id="contact-email">correo@ejemplo.com</span>
+            </div>
+          </div>
+          <div class="pt-2">
+            <a class="dynamic-wa-link inline-flex items-center gap-2 text-xs font-semibold text-[var(--brand-primary)] hover:underline" href="#" target="_blank" rel="noopener noreferrer">
+              <span>Iniciar chat de atención inmediata</span>
+              <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
   </main>
 
-  <!-- Toast for prompt copy -->
-  <div id="copy-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 px-4 py-2.5 rounded-xl bg-surface-raised border border-mint-emerald/40 text-xs font-medium text-mint-emerald shadow-2xl flex items-center gap-2 pointer-events-none">
-    <span class="material-symbols-outlined text-[16px]">check_circle</span>
-    <span id="toast-text">✓ Consulta cargada en la vista previa</span>
-  </div>
-
-  <!-- MINIMALIST PRODUCT FOOTER -->
-  <footer class="w-full border-t border-border-subtle bg-surface-base py-10">
-    <div class="max-w-7xl mx-auto px-6 sm:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
-      <!-- Brand & Project Info -->
-      <div class="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
-        <div class="flex items-center gap-2">
-          <div class="w-6 h-6 rounded-md bg-surface-raised flex items-center justify-center">
-            <span class="text-mint-emerald font-bold text-xs">F</span>
-          </div>
-          <span class="font-display font-bold text-sm text-text-primary">FitBot AI</span>
-        </div>
-        <span class="hidden sm:inline text-text-muted">•</span>
-        <span class="text-xs text-text-secondary">Asistente Inteligente de WhatsApp para Gimnasios y Centros Deportivos</span>
+  <!-- FOOTER -->
+  <footer class="w-full border-t border-white/10 bg-surface-base py-8 px-6">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div>
+        © 2026 <span class="dynamic-brand-name text-slate-300">Negocio</span>. Todos los derechos reservados.
       </div>
-
-      <!-- Links -->
-      <div class="flex items-center gap-5 text-xs text-text-secondary">
-        <a class="hover:text-text-primary transition-colors flex items-center gap-1 font-medium text-mint-emerald" href="https://wa.me/573177509725?text=Hola%20FitBot" rel="noopener noreferrer" target="_blank">
-          <span>Chatear en WhatsApp</span>
-          <span class="material-symbols-outlined text-[13px]">north_east</span>
-        </a>
-        <a class="hover:text-text-primary transition-colors flex items-center gap-1" href="#overview">
-          <span>Volver Arriba</span>
-          <span class="material-symbols-outlined text-[13px]">arrow_upward</span>
-        </a>
+      <div class="flex items-center gap-4">
+        <a href="#playground" class="hover:text-slate-300 transition-colors">Chat Web</a>
+        <a href="#contacto" class="hover:text-slate-300 transition-colors">Contacto</a>
+        <a href="/admin.html" class="hover:text-slate-300 font-mono transition-colors">Panel Admin</a>
       </div>
     </div>
   </footer>
 
-  <!-- CLIENT-SIDE SCRIPT -->
-  <script src="app.js"></script>
+  <script src="/app.js"></script>
 </body>
 </html>
