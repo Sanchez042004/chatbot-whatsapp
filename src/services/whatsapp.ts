@@ -13,6 +13,7 @@ import {
   deactivateAdvisorMode,
   resetUserSession,
 } from './gemini';
+import { activeBusiness } from '../domain/business-loader';
 import { logger } from '../utils/logger';
 
 const AUTH_DIR = path.resolve(process.cwd(), 'baileys_auth_info');
@@ -73,16 +74,19 @@ function scheduleInactivityTimers(from: string, sock: ReturnType<typeof makeWASo
     if (isAwaitingAdvisor(from)) return;
     try {
       await sock.sendMessage(from, {
-        text: 'Hola 👋 ¿Hay algo más en lo que te pueda colaborar el día de hoy? ¡Estoy aquí para ayudarte! 💪',
+        text: activeBusiness.bot.advisorFollowUpMessage,
       });
       logger.info(`Seguimiento por inactividad enviado a ${from}`);
 
       const closeTimer = setTimeout(async () => {
         if (isAwaitingAdvisor(from)) return;
         try {
-          await sock.sendMessage(from, {
-            text: 'Damos por finalizada tu consulta por el momento. Si necesitas algo más adelante, solo escríbenos. ¡Que tengas un excelente día! ✨',
-          });
+          const closingText =
+            activeBusiness.language === 'en'
+              ? 'We have concluded your inquiry for now. If you need anything later, just message us! Have a great day! ✨'
+              : 'Damos por finalizada tu consulta por el momento. Si necesitas algo más adelante, solo escríbenos. ¡Que tengas un excelente día! ✨';
+
+          await sock.sendMessage(from, { text: closingText });
           resetUserSession(from);
           clearUserInactivityTimers(from);
           logger.info(`Sesión cerrada por inactividad para ${from}`);
@@ -103,7 +107,7 @@ function scheduleInactivityTimers(from: string, sock: ReturnType<typeof makeWASo
 
 /**
  * Finaliza la atención humana del asesor y retoma el bot de manera natural,
- * preguntando cordialmente si el usuario tiene alguna otra duda.
+ * enviando el mensaje de seguimiento configurado en el negocio.
  */
 export async function endAdvisorSessionAndResume(jid: string): Promise<boolean> {
   if (!currentSock) return false;
@@ -111,8 +115,7 @@ export async function endAdvisorSessionAndResume(jid: string): Promise<boolean> 
   deactivateAdvisorMode(jid);
   clearUserInactivityTimers(jid);
 
-  const followUpMessage =
-    'Hola de nuevo 👋 Esperamos haber resuelto tu consulta. ¿Hay algo más en lo que te pueda colaborar el día de hoy? ¡Estoy aquí para ayudarte! 💪';
+  const followUpMessage = activeBusiness.bot.advisorFollowUpMessage;
   try {
     await currentSock.sendMessage(jid, { text: followUpMessage });
     scheduleInactivityTimers(jid, currentSock);
@@ -284,12 +287,15 @@ export async function startWhatsAppBot(): Promise<void> {
 
     // Manejo de multimedia no soportado
     if (!textMessage) {
+      const isEnglish = activeBusiness.language === 'en';
       if (msg.message.audioMessage) {
         await sock.sendPresenceUpdate('composing', from).catch(() => {});
         await new Promise((r) => setTimeout(r, 1200));
         await sock.sendPresenceUpdate('paused', from).catch(() => {});
         await sock.sendMessage(from, {
-          text: '🎧 Por el momento no puedo escuchar notas de voz. Por favor escríbeme tu duda en texto o escribe *"asesor"* para hablar con alguien de nuestro equipo. 💪',
+          text: isEnglish
+            ? '🎧 I currently cannot listen to audio notes. Please type your question or write *"advisor"* to speak with our team.'
+            : '🎧 Por el momento no puedo escuchar notas de voz. Por favor escríbeme tu duda en texto o escribe *"asesor"* para hablar con alguien de nuestro equipo.',
         });
         return;
       }
@@ -298,7 +304,9 @@ export async function startWhatsAppBot(): Promise<void> {
         await new Promise((r) => setTimeout(r, 1200));
         await sock.sendPresenceUpdate('paused', from).catch(() => {});
         await sock.sendMessage(from, {
-          text: '📷 ¡He recibido tu archivo! Si es un comprobante de pago, escribe *"asesor"* para que nuestro personal lo revise. 🏋️‍♂️',
+          text: isEnglish
+            ? '📷 File received! If you need manual review or support, please write *"advisor"* so our team can check it.'
+            : '📷 ¡He recibido tu archivo! Si necesitas revisión o soporte manual, escribe *"asesor"* para que nuestro personal lo revise.',
         });
         return;
       }
@@ -307,7 +315,7 @@ export async function startWhatsAppBot(): Promise<void> {
         await new Promise((r) => setTimeout(r, 1000));
         await sock.sendPresenceUpdate('paused', from).catch(() => {});
         await sock.sendMessage(from, {
-          text: '💪 ¡Con toda la energía! Si tienes alguna duda sobre planes, clases u horarios, escríbela aquí.',
+          text: activeBusiness.bot.welcomeMessage,
         });
         return;
       }
@@ -319,9 +327,11 @@ export async function startWhatsAppBot(): Promise<void> {
     // Rate limit
     if (!checkRateLimit(from)) {
       logger.warn(`Rate limit excedido para ${from}`);
-      await sock.sendMessage(from, {
-        text: '⏳ Has enviado varios mensajes seguidos. Por favor espera unos segundos antes de continuar.',
-      });
+      const rateLimitText =
+        activeBusiness.language === 'en'
+          ? '⏳ You have sent several messages in a row. Please wait a few seconds before sending your next inquiry.'
+          : '⏳ Has enviado varios mensajes seguidos. Por favor espera unos segundos antes de continuar.';
+      await sock.sendMessage(from, { text: rateLimitText });
       return;
     }
 

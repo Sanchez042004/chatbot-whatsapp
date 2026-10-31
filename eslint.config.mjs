@@ -16,3 +16,4 @@ export default tseslint.config(
     ignores: ['dist/**', 'node_modules/**', 'baileys_auth_info/**', 'public/**', 'scripts/**'],
   }
 );
+

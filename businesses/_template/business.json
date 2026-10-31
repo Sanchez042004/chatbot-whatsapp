@@ -1,0 +1,84 @@
+{
+  "_comentario_general": "PLANTILLA DE CONFIGURACIÓN DE NEGOCIO PARA CHATBOT WHITE-LABEL. Copia esta carpeta con el nombre de tu negocio en /businesses/<id>/ y ajusta los valores.",
+  "id": "mi_negocio",
+  "name": "Nombre de Tu Negocio",
+  "tagline": "Eslogan corto o descripción atractiva",
+  "industry": "Restaurante / Clínica / Supermercado / Tienda / etc.",
+  "language": "es",
+  "timezone": "America/Bogota",
+  "currency": "COP",
+  "branding": {
+    "logoUrl": "/assets/logo.png",
+    "primaryColor": "#3B82F6",
+    "secondaryColor": "#10B981"
+  },
+  "contact": {
+    "phone": "+57 300 000 0000",
+    "whatsapp": "+573000000000",
+    "email": "contacto@minegocio.com",
+    "address": "Calle 123 # 45-67, Ciudad",
+    "mapsUrl": "https://maps.google.com/?q=Calle+123",
+    "socialMedia": {
+      "instagram": "@minegocio",
+      "facebook": "@minegocio",
+      "website": "https://minegocio.com"
+    }
+  },
+  "bot": {
+    "welcomeMessage": "¡Hola! 👋 Bienvenido/a a *Nombre de Tu Negocio*.\n\n¿En qué podemos colaborarte hoy? Puedes consultarme sobre:\n• 🕒 Horarios de atención\n• 📍 Ubicación y cómo llegar\n• 📋 Servicios y precios\n• 🧑‍💼 Hablar con un asesor (escribe *asesor*)",
+    "fallbackMessage": "😕 No comprendí tu consulta del todo.\n\nPor favor intenta escribir una de las siguientes opciones o palabras clave:\n• *Horarios*\n• *Ubicación*\n• *Precios / Servicios*\n• *Asesor*",
+    "advisorPrompt": "¡Con gusto! 🧑‍💼 Un integrante de nuestro equipo se pondrá en contacto contigo en breve. ¡Gracias por tu paciencia!",
+    "advisorFollowUpMessage": "Hola nuevamente 👋 Esperamos haber resuelto tu consulta. ¿Hay algo más en lo que podamos colaborarte hoy? ¡Estamos a tu servicio!",
+    "advisorKeywords": [
+      "asesor",
+      "humano",
+      "persona",
+      "agente",
+      "hablar con alguien",
+      "ayuda humana"
+    ],
+    "greetingKeywords": [
+      "hola",
+      "buenas",
+      "buenos dias",
+      "buenas tardes",
+      "buenas noches",
+      "hey",
+      "saludos",
+      "menu"
+    ]
+  },
+  "schedule": [
+    { "day": "Lunes a Viernes", "hours": "8:00 am a 6:00 pm" },
+    { "day": "Sábados", "hours": "9:00 am a 2:00 pm" },
+    { "day": "Domingos y Festivos", "hours": "Cerrado" }
+  ],
+  "offers": [
+    {
+      "name": "Servicio o Producto Principal",
+      "price": "$50.000",
+      "description": "Descripción clara del servicio o producto ofrecido.",
+      "highlight": true
+    }
+  ],
+  "faqs": [
+    {
+      "id": "faq_horarios",
+      "category": "horarios",
+      "keywords": ["horario", "horarios", "hora", "abren", "cierran", "abierto", "cerrado", "festivos"],
+      "answer": "🕒 *Nuestros Horarios de Atención:*\n\n• Lunes a Viernes: 8:00 am a 6:00 pm\n• Sábados: 9:00 am a 2:00 pm\n• Domingos y Festivos: Cerrado."
+    },
+    {
+      "id": "faq_ubicacion",
+      "category": "ubicacion",
+      "keywords": ["donde estan", "donde queda", "ubicacion", "direccion", "como llegar", "sede"],
+      "answer": "📍 *Nuestra Ubicación:*\n\nEstamos ubicados en la Calle 123 # 45-67, Ciudad. ¡Te esperamos!"
+    },
+    {
+      "id": "faq_pagos",
+      "category": "pagos",
+      "keywords": ["pago", "pagos", "metodos de pago", "transferencia", "nequi", "tarjeta", "efectivo"],
+      "answer": "💳 *Métodos de Pago Aceptados:*\n\nRecibimos efectivo, transferencias bancarias (Nequi, Daviplata, Bancolombia) y tarjetas de débito/crédito."
+    }
+  ]
+}

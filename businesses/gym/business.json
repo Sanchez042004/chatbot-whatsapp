@@ -1,0 +1,147 @@
+{
+  "id": "gym",
+  "name": "FitBot Gym",
+  "tagline": "Tu asistente virtual de entrenamiento y bienestar",
+  "industry": "Gimnasio & Fitness",
+  "language": "es",
+  "timezone": "America/Bogota",
+  "currency": "COP",
+  "branding": {
+    "logoUrl": "/assets/mascot.jpg",
+    "primaryColor": "#00F59B",
+    "secondaryColor": "#38BDF8"
+  },
+  "contact": {
+    "phone": "+57 317 750 9725",
+    "whatsapp": "+573177509725",
+    "email": "contacto@fitbotgym.com",
+    "address": "Cra 8 # 28-18, Bogotá, Colombia",
+    "mapsUrl": "https://maps.google.com/?q=Cra+8+%23+28-18",
+    "socialMedia": {
+      "instagram": "@fitbotgym",
+      "facebook": "@fitbotgym",
+      "website": "https://fitbotgym.com"
+    }
+  },
+  "bot": {
+    "welcomeMessage": "¡Hola! 👋🏋️‍♂️ Bienvenido/a a *FitBot Gym*, tu asistente virtual.\n\n¿En qué puedo colaborarte hoy? Puedes consultarme sobre:\n• 🕒 *Horarios* (atención semanal y festivos)\n• 📋 *Planes y Precios* (básico, premium, anual)\n• 🚴 *Clases grupales* (Spinning, Yoga, Zumba, CrossFit)\n• 📝 *Requisitos de ingreso* (inscripción y edades)\n• 🎟️ *Free Pass* (pase de prueba gratis de 1 día)\n• 📍 *Ubicación y parqueadero gratuito*\n• 🧑‍💼 *Hablar con un asesor* (escribe *\"asesor\"*)\n\n¡Escríbeme tu duda y con gusto te ayudo! 💪",
+    "fallbackMessage": "😕 No logré entender del todo tu consulta.\n\nPor favor escribe alguna de las siguientes opciones para brindarte la información exacta:\n\n• 🕒 *Horarios* (atención semanal y festivos)\n• 📋 *Planes* (precios, mensualidades y formas de pago)\n• 🚴 *Clases* (Spinning, Yoga, Zumba, CrossFit)\n• 📝 *Requisitos* (inscripción y menores de edad)\n• 🎟️ *Free Pass* (pase gratis de 1 día de cortesía)\n• 📍 *Ubicación* (dirección y parqueadero gratuito)\n• 🧑‍💼 *Asesor* (hablar directamente con una persona)\n\n¡Estoy listo para ayudarte! 💪",
+    "advisorPrompt": "¡Claro! 🧑‍💼 En un momento un asesor de nuestro equipo se comunicará contigo. ¡Gracias por tu paciencia! 🙏",
+    "advisorFollowUpMessage": "Hola de nuevo 👋 Esperamos haber resuelto tu consulta. ¿Hay algo más en lo que te pueda colaborar el día de hoy? ¡Estoy aquí para ayudarte! 💪",
+    "advisorKeywords": [
+      "asesor",
+      "asesores",
+      "humano",
+      "humanos",
+      "agente",
+      "persona",
+      "hablar con alguien",
+      "quiero asesor",
+      "necesito asesor",
+      "operador",
+      "recepcion"
+    ],
+    "greetingKeywords": [
+      "hola",
+      "buenas",
+      "buenos dias",
+      "buenas tardes",
+      "buenas noches",
+      "hey",
+      "saludos",
+      "que tal",
+      "hi",
+      "hello",
+      "buen dia",
+      "inicio",
+      "empezar",
+      "menu"
+    ]
+  },
+  "schedule": [
+    { "day": "Lunes a Viernes", "hours": "5:00 am a 10:00 pm" },
+    { "day": "Sábados", "hours": "6:00 am a 6:00 pm" },
+    { "day": "Domingos", "hours": "7:00 am a 2:00 pm" },
+    { "day": "Festivos", "hours": "7:00 am a 1:00 pm" }
+  ],
+  "offers": [
+    {
+      "name": "Plan Mensual Básico",
+      "price": "$80.000 / mes",
+      "description": "Acceso ilimitado a zona de pesas y cardio. Sin cláusula de permanencia."
+    },
+    {
+      "name": "Plan Premium",
+      "price": "$120.000 / mes",
+      "description": "Incluye pesas, cardio, acceso a todas las clases grupales y zona húmeda (sauna).",
+      "highlight": true
+    },
+    {
+      "name": "Plan Anual",
+      "price": "$1.000.000 / año",
+      "description": "Ahorra con 2 meses completamente gratis. Transferible a otra persona."
+    }
+  ],
+  "faqs": [
+    {
+      "id": "faq_horarios",
+      "category": "horarios",
+      "keywords": [
+        "horario", "horarios", "hora", "horas", "abren", "abierto", "abre",
+        "cierran", "cierra", "cerrado", "festivo", "festivos", "domingo", "domingos",
+        "sabado", "sabados", "lunes", "puente", "hora pico", "atienden"
+      ],
+      "answer": "🕒 *Nuestros Horarios de Atención:*\n\n• *Lunes a Viernes:* 5:00 am a 10:00 pm\n• *Sábados:* 6:00 am a 6:00 pm\n• *Domingos:* 7:00 am a 2:00 pm\n• *Festivos y puentes:* 7:00 am a 1:00 pm\n*(Solo cerramos el 25 de diciembre y 1 de enero)*\n\n💡 *Tip:* Las horas más tranquilas son de 10:00 am a 4:00 pm. Horas pico: 6:00-8:30 am y 5:30-8:30 pm."
+    },
+    {
+      "id": "faq_ubicacion",
+      "category": "ubicacion",
+      "keywords": [
+        "ubicacion", "ubicados", "ubicado", "direccion", "donde queda", "donde quedan",
+        "donde estan", "donde es", "como llegar", "parqueadero", "parqueaderos",
+        "estacionamiento", "parquear", "parqueo", "mapa", "sede", "cra 8"
+      ],
+      "answer": "📍 *Ubicación y Parqueadero:*\n\nEstamos ubicados en la *Cra 8 # 28-18*.\n🚗 Contamos con *parqueadero gratuito* para nuestros afiliados por hasta 3 horas continuas mientras entrenas."
+    },
+    {
+      "id": "faq_planes",
+      "category": "planes",
+      "keywords": [
+        "plan", "planes", "precio", "precios", "costo", "costos", "tarifa", "tarifas",
+        "cuanto vale", "cuanto cuesta", "mensualidad", "mensual", "premium", "anual",
+        "suscripcion", "membresia", "metodos de pago", "formas de pago", "nequi",
+        "daviplata", "tarjeta", "tarjetas", "efectivo", "congelar", "cancelar", "permanencia"
+      ],
+      "answer": "📋 *Planes y Tarifas:*\n\n• 🥉 *Plan Mensual Básico:* $80.000 / mes (acceso ilimitado a zona de pesas y cardio).\n• 🥇 *Plan Premium:* $120.000 / mes (incluye pesas, cardio, acceso a todas las clases grupales y zona húmeda/sauna).\n• 💎 *Plan Anual:* $1.000.000 (¡incluye 2 meses gratis!).\n\n💳 *Métodos de pago:* Efectivo en recepción, tarjetas débito/crédito, transferencias por PSE, Nequi y Daviplata.\n✨ *Sin permanencia:* En planes mensuales no tienes cláusula de permanencia mínima."
+    },
+    {
+      "id": "faq_clases",
+      "category": "clases",
+      "keywords": [
+        "clase", "clases", "spinning", "spin", "yoga", "pilates", "zumba",
+        "crossfit", "funcional", "baile", "grupal", "grupales", "cupo", "reserva", "reservar"
+      ],
+      "answer": "🚴 *Clases Grupales (Multinivel):*\n\n• 🚴 *Spinning:* Lunes a viernes a las 6:00 am, 7:00 am, 6:00 pm y 7:00 pm. Sábados: 8:00 am y 9:00 am.\n• 🧘 *Yoga y Pilates:* Martes y jueves a las 7:00 am y 5:00 pm. Sábados: 10:00 am.\n• 💃 *Zumba:* Lunes, miércoles y viernes a las 8:00 am y 6:30 pm.\n• 🏋️ *CrossFit y Funcional:* Lunes a viernes a las 6:00 am, 8:00 am, 5:00 pm y 7:00 pm. Sábados: 9:00 am.\n\n📱 *Reservas:* Reserva tu cupo desde nuestra app o en recepción con hasta 2 horas de anticipación. Pases de clase suelta por $15.000."
+    },
+    {
+      "id": "faq_requisitos",
+      "category": "requisitos",
+      "keywords": [
+        "requisito", "requisitos", "inscribir", "inscripcion", "afiliar", "afiliacion",
+        "edad", "edad minima", "menor", "menores", "par q", "parq", "documento",
+        "cedula", "que necesito", "ropa", "toalla", "candado"
+      ],
+      "answer": "📝 *Requisitos de Ingreso e Inscripción:*\n\n1. Presentar documento de identidad original.\n2. Diligenciar formulario de registro y declaración de salud (PAR-Q).\n3. Traer toalla personal de entrenamiento, hidratación en termo cerrado y ropa deportiva con tenis limpios.\n\n👶 *Menores de edad:* La edad mínima para entrenar es de 14 años. Menores entre 14 y 17 años deben presentar autorización escrita firmada por padres o acudiente con fotocopia de su documento."
+    },
+    {
+      "id": "faq_freepass",
+      "category": "freepass",
+      "keywords": [
+        "free pass", "freepass", "pase", "pases", "prueba", "cortesia", "gratis",
+        "dia gratis", "clase gratis", "probar", "conocer"
+      ],
+      "answer": "🎟️ *Pase de Prueba Gratis (Free Pass):*\n\n¡Queremos que nos conozcas! Ofrecemos un *Free Pass de 1 día totalmente gratis*.\nSolo acércate a la recepción con tu documento de identidad original para activarlo y comenzar a entrenar de inmediato. ¡También puedes usarlo para invitar a un amigo! 💪"
+    }
+  ]
+}
+

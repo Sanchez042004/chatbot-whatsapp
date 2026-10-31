@@ -1,5 +1,6 @@
 import readline from 'readline';
 import { generateResponse, isAwaitingAdvisor, deactivateAdvisorMode } from '../src/services/gemini';
+import { activeBusiness } from '../src/domain/business-loader';
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -9,7 +10,8 @@ const rl = readline.createInterface({
 const SIMULATED_PHONE = '573001234567@s.whatsapp.net';
 
 console.log('====================================================');
-console.log('🤖 SIMULADOR INTERACTIVO FITBOT (WhatsApp CLI)');
+console.log(`🤖 SIMULADOR INTERACTIVO ${activeBusiness.name.toUpperCase()} (WhatsApp CLI)`);
+console.log(`   Negocio activo: [${activeBusiness.id}] - ${activeBusiness.industry}`);
 console.log('====================================================');
 console.log('Escribe un mensaje como si fueras un usuario de WhatsApp.');
 console.log('Comandos especiales:');
@@ -52,12 +54,13 @@ function promptUser() {
       return;
     }
 
-    console.log('⏳ FitBot está escribiendo...');
+    console.log(`⏳ ${activeBusiness.name} está escribiendo...`);
     try {
       const response = await generateResponse(trimmed, SIMULATED_PHONE);
-      console.log(`\n🤖 FitBot:\n${response}`);
-    } catch (err: any) {
-      console.error('Error generando respuesta:', err?.message || err);
+      console.log(`\n🤖 ${activeBusiness.name}:\n${response}`);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('Error generando respuesta:', msg);
     }
 
     promptUser();

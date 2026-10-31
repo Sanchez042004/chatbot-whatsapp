@@ -1,0 +1,136 @@
+{
+  "id": "restaurant",
+  "name": "Trattoria Bella Italia",
+  "tagline": "Auténtica cocina italiana a la leña y pastas artesanales",
+  "industry": "Restaurante & Pizzería",
+  "language": "es",
+  "timezone": "America/Bogota",
+  "currency": "COP",
+  "branding": {
+    "logoUrl": "/assets/restaurant-logo.png",
+    "primaryColor": "#EF4444",
+    "secondaryColor": "#10B981"
+  },
+  "contact": {
+    "phone": "+57 310 987 6543",
+    "whatsapp": "+573109876543",
+    "email": "reservas@bellaitalia.com",
+    "address": "Calle 93 # 12-40, Zona Gastronómica, Bogotá",
+    "mapsUrl": "https://maps.google.com/?q=Calle+93+Bogota",
+    "socialMedia": {
+      "instagram": "@bellaitalia_resto",
+      "facebook": "@bellaitalia.co",
+      "website": "https://bellaitalia.com"
+    }
+  },
+  "bot": {
+    "welcomeMessage": "¡Benvenuti! 🍕🍷 Bienvenido/a a *Trattoria Bella Italia*.\n\n¿En qué podemos atenderte hoy? Puedes consultarme sobre:\n• 🍝 *Menú y Especialidades*\n• 🛵 *Domicilios y Cobertura*\n• 📅 *Reservas de Mesa*\n• 🕒 *Horarios de Apertura*\n• 💳 *Métodos de Pago*\n• 🧑‍💼 *Hablar con una persona* (escribe *\"asesor\"* o *\"mozo\"*)",
+    "fallbackMessage": "😕 Disculpa, no comprendí bien tu mensaje.\n\nPuedes consultar sobre:\n• 🍝 *Menú* (pastas, pizzas y postres)\n• 🛵 *Domicilios* (tiempos y zonas de entrega)\n• 📅 *Reservas* (mesas y eventos)\n• 🕒 *Horarios* (almuerzos y cenas)\n• 🧑‍💼 *Asesor* (hablar con un mesero/encargado)\n\n¿Qué información te gustaría conocer? 🍕",
+    "advisorPrompt": "¡Con gusto! 🧑‍💼 Un integrante de nuestro equipo de atención se pondrá en contacto contigo en breve para asistirte personalmente con tu pedido o reserva.",
+    "advisorFollowUpMessage": "¡Hola de nuevo! 🍕 Esperamos que tu consulta haya quedado resuelta. ¿Deseas consultar nuestro menú, pedir domicilio o resolver alguna otra duda?",
+    "advisorKeywords": [
+      "asesor",
+      "humano",
+      "persona",
+      "agente",
+      "mesero",
+      "mozo",
+      "encargado",
+      "administrador",
+      "hablar con alguien",
+      "telefono"
+    ],
+    "greetingKeywords": [
+      "hola",
+      "buenas",
+      "buenos dias",
+      "buenas tardes",
+      "buenas noches",
+      "hey",
+      "ciao",
+      "menu",
+      "carta",
+      "empezar"
+    ]
+  },
+  "schedule": [
+    { "day": "Martes a Jueves", "hours": "12:00 pm a 10:00 pm" },
+    { "day": "Viernes y Sábados", "hours": "12:00 pm a 11:30 pm" },
+    { "day": "Domingos", "hours": "12:00 pm a 8:00 pm" },
+    { "day": "Lunes", "hours": "Cerrado por mantenimiento" }
+  ],
+  "offers": [
+    {
+      "name": "Pizza Napolitana Margherita",
+      "price": "$38.000",
+      "description": "Masa madre madurada 48 horas, salsa pomodoro San Marzano, mozzarella fior di latte y albahaca fresca.",
+      "highlight": true
+    },
+    {
+      "name": "Fettuccine al Tartufo & Funghi",
+      "price": "$46.000",
+      "description": "Pasta artesanal fresca elaborada en casa con crema de trufas negras y hongos silvestres."
+    },
+    {
+      "name": "Tiramisú Tradicional",
+      "price": "$18.000",
+      "description": "El clásico italiano con queso mascarpone, café espresso y cacao amargo."
+    }
+  ],
+  "faqs": [
+    {
+      "id": "faq_menu",
+      "category": "menu",
+      "keywords": [
+        "menu", "carta", "platos", "pizza", "pizzas", "pasta", "pastas",
+        "postre", "postres", "vino", "vinos", "precios", "especialidad", "comida"
+      ],
+      "answer": "🍝 *Nuestra Carta y Especialidades:*\n\nOfrecemos cocina italiana auténtica:\n• 🍕 *Pizzas a la Leña:* Margherita, Cuatro Quesos, Prosciutto e Rúcula, Pepperoni Piccante (desde $35.000 a $48.000).\n• 🍝 *Pastas Frescas Artesanales:* Lasagna Bolognese, Ravioli de Ricotta, Fettuccine al Tartufo y Spaghetti Carbonara tradicional (desde $36.000 a $49.000).\n• 🍮 *Postres:* Tiramisú tradicional y Panna Cotta de frutos rojos ($18.000).\n\nPuedes ver nuestra carta con fotos completa en: https://bellaitalia.com/menu"
+    },
+    {
+      "id": "faq_domicilios",
+      "category": "domicilios",
+      "keywords": [
+        "domicilio", "domicilios", "delivery", "pedir", "ordenar", "llevar",
+        "tiempo de entrega", "cobertura", "cuanto demora", "costo envio"
+      ],
+      "answer": "🛵 *Servicio de Domicilios:*\n\n• Cobertura: Entre calles 72 a 127 y Cerros Orientales a Autopista Norte.\n• Tiempo de entrega: Entre 35 a 50 minutos.\n• Costo de envío: $6.000 (¡Gratis en pedidos superiores a $90.000!).\n• Para tomar tu pedido inmediatamente, escríbenos tu dirección y los platos que deseas ordenar."
+    },
+    {
+      "id": "faq_reservas",
+      "category": "reservas",
+      "keywords": [
+        "reserva", "reservas", "reservar", "mesa", "mesas", "apartar",
+        "cumpleanos", "aniversario", "evento", "cupo"
+      ],
+      "answer": "📅 *Reservas de Mesa:*\n\n• Tomamos reservas para grupos de 2 hasta 30 personas.\n• No cobramos anticipo para grupos menores a 6 personas.\n• Para celebraciones de cumpleaños o aniversarios, ¡obsequiamos un postre para el homenajeado! 🎉\n• Para apartar tu mesa, por favor escribe: *Nombre, fecha, hora y número de personas*, o escribe *\"asesor\"* para confirmarte el cupo."
+    },
+    {
+      "id": "faq_horarios",
+      "category": "horarios",
+      "keywords": [
+        "horario", "horarios", "hora", "abren", "cierran", "abierto",
+        "domingo", "lunes", "sabado", "festivo", "almuerzo", "cena"
+      ],
+      "answer": "🕒 *Nuestros Horarios de Atención:*\n\n• *Martes a Jueves:* 12:00 pm a 10:00 pm\n• *Viernes y Sábados:* 12:00 pm a 11:30 pm\n• *Domingos y Festivos:* 12:00 pm a 8:00 pm\n• *Lunes:* Cerrado por descanso del equipo culinario."
+    },
+    {
+      "id": "faq_ubicacion",
+      "category": "ubicacion",
+      "keywords": [
+        "ubicacion", "donde estan", "donde queda", "direccion", "como llegar",
+        "parqueadero", "parquear", "estacionamiento", "valet"
+      ],
+      "answer": "📍 *Ubicación y Parqueadero:*\n\nEstamos en la *Calle 93 # 12-40, Bogotá* (a dos cuadras del Parque de la 93).\n🚗 Contamos con servicio de *Valet Parking* vigilado frente al restaurante ($10.000 tarifa única por estancia)."
+    },
+    {
+      "id": "faq_pagos",
+      "category": "pagos",
+      "keywords": [
+        "pagos", "pago", "pagar", "metodos de pago", "tarjeta", "efectivo",
+        "nequi", "daviplata", "transferencia", "propina"
+      ],
+      "answer": "💳 *Métodos de Pago Aceptados:*\n\n• Efectivo\n• Tarjetas de crédito y débito (Visa, Mastercard, American Express)\n• Transferencias Nequi y Daviplata\n• Bonos Sodexo / Pluxee Gastronomía."
+    }
+  ]
+}

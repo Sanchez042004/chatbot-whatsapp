@@ -1,4 +1,5 @@
 import { matchFAQ, FAQ_RESPONSES } from './faq';
+import { activeBusiness } from '../domain/business-loader';
 import { logger } from '../utils/logger';
 
 export interface ChatPart {
@@ -66,8 +67,8 @@ export function resetUserSession(from: string): void {
 /**
  * Genera la respuesta del bot para un mensaje entrante:
  * 1. Verifica si el usuario está confirmando solicitud de asesor.
- * 2. Normaliza el texto y busca coincidencia directa en las FAQs oficiales del gimnasio.
- * 3. Si no coincide, retorna la respuesta de respaldo amable con menú de opciones.
+ * 2. Normaliza el texto y busca coincidencia directa en las FAQs configuradas del negocio.
+ * 3. Si no coincide, retorna la respuesta de respaldo del negocio activo.
  */
 export async function generateResponse(userMessage: string, from: string): Promise<string> {
   try {
@@ -81,13 +82,13 @@ export async function generateResponse(userMessage: string, from: string): Promi
       if (confirms) {
         activateAdvisorMode(from);
         pendingAdvisorOffer.delete(from);
-        return '¡Perfecto! 🧑‍💼 Un asesor de nuestro equipo se comunicará contigo a la brevedad. ¡Gracias por contactarnos!';
+        return activeBusiness.bot.advisorPrompt;
       } else {
         pendingAdvisorOffer.delete(from);
       }
     }
 
-    // 2. Coincidencia directa con las FAQs oficiales del gimnasio
+    // 2. Coincidencia directa con las FAQs configuradas para este negocio
     const faqResult = matchFAQ(userMessage);
 
     // Escalar a asesor
@@ -112,6 +113,6 @@ export async function generateResponse(userMessage: string, from: string): Promi
     return FAQ_RESPONSES.fallback;
   } catch (error: unknown) {
     logger.error('Error generando respuesta', { error: String(error) });
-    return 'Disculpa, ocurrió un error momentáneo al procesar tu mensaje. Por favor intenta de nuevo o escribe *"asesor"* para comunicarte con nuestro equipo. 💪';
+    return 'Disculpa, ocurrió un error momentáneo al procesar tu mensaje. Por favor intenta de nuevo o escribe *"asesor"* para comunicarte con nuestro equipo.';
   }
 }

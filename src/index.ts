@@ -7,6 +7,8 @@ import QRCode from 'qrcode';
 import { config } from './config/env';
 import { startWhatsAppBot, getBotStatus, endAdvisorSessionAndResume } from './services/whatsapp';
 import { getActiveAdvisorChats } from './services/gemini';
+import { matchFAQ } from './services/faq';
+import { activeBusiness } from './domain/business-loader';
 import { logger } from './utils/logger';
 
 const app = express();
@@ -60,6 +62,48 @@ app.get('/health', (_req: Request, res: Response) => {
     status,
     uptimeSeconds,
     timestamp: new Date().toISOString(),
+  });
+});
+
+// Endpoint de configuración pública del negocio activo (White-Label)
+app.get('/api/business/config', (_req: Request, res: Response) => {
+  res.json({
+    success: true,
+    business: {
+      id: activeBusiness.id,
+      name: activeBusiness.name,
+      tagline: activeBusiness.tagline,
+      industry: activeBusiness.industry,
+      language: activeBusiness.language,
+      branding: activeBusiness.branding,
+      contact: activeBusiness.contact,
+      schedule: activeBusiness.schedule,
+      offers: activeBusiness.offers,
+      faqs: activeBusiness.faqs.map((f) => ({
+        id: f.id,
+        category: f.category,
+        title: f.keywords[0] ? f.keywords[0].toUpperCase() : f.id,
+        answer: f.answer,
+      })),
+      welcomeMessage: activeBusiness.bot.welcomeMessage,
+    },
+  });
+});
+
+// Endpoint de chat web (utiliza el mismo motor y respuestas que WhatsApp)
+app.post('/api/chat', (req: Request, res: Response) => {
+  const { message } = req.body as { message?: string };
+  if (!message || typeof message !== 'string') {
+    return res.status(400).json({ success: false, error: 'Mensaje requerido' });
+  }
+
+  const result = matchFAQ(message);
+  return res.json({
+    success: true,
+    category: result.category,
+    response: result.response,
+    matched: result.matched,
+    quickReplies: result.quickReplies,
   });
 });
 
